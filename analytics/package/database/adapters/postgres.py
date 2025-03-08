@@ -61,6 +61,7 @@ class PGAdapter(BaseAdapter):
         with connection.cursor() as cursor:
             yield (connection, cursor)
 
+        cursor.close()
         connection.close()
 
     def has_database(self, database: str) -> bool:
