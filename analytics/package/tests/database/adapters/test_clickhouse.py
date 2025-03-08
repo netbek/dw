@@ -30,7 +30,7 @@ class TestCHAdapter(DBTest):
 
         ch_adapter.drop_table(table)
 
-    def test_clickhouse_client(self, ch_adapter: CHAdapter):
+    def test_create_client(self, ch_adapter: CHAdapter):
         with ch_adapter.create_client() as client:
             actual = client.query(
                 "select 1 from system.databases where name = {database:String};",
@@ -38,7 +38,7 @@ class TestCHAdapter(DBTest):
             ).result_rows
         assert actual == [(1,)]
 
-    def test_clickhouse_session(self, ch_adapter: CHAdapter, ch_session: Session):
+    def test_create_session(self, ch_adapter: CHAdapter, ch_session: Session):
         actual = ch_session.exec(
             text("select 1 from system.databases where name = :database;").bindparams(
                 database=ch_adapter.settings.database

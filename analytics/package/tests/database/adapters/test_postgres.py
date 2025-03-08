@@ -46,7 +46,7 @@ class TestPGAdapter(DBTest):
 
         pg_adapter.drop_publication(publication)
 
-    def test_postgres_client(self, pg_adapter: PGAdapter):
+    def test_create_client(self, pg_adapter: PGAdapter):
         with pg_adapter.create_client() as (conn, cur):
             cur.execute(
                 "select 1 from information_schema.schemata where catalog_name = %s limit 1;",
@@ -55,7 +55,7 @@ class TestPGAdapter(DBTest):
             actual = cur.fetchall()
         assert actual == [(1,)]
 
-    def test_postgres_session(self, pg_adapter: PGAdapter):
+    def test_create_session(self, pg_adapter: PGAdapter):
         with pg_adapter.create_session() as session:
             actual = session.exec(
                 text(
