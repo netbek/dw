@@ -5,6 +5,7 @@
 .bash_logout
 .cache
 .dotnet
+.duckdb
 .gitconfig
 .gk
 .ipynb_checkpoints
@@ -12,11 +13,13 @@
 .local
 .prefect/flows.json
 .prefect/memo_store.toml
+.prefect/storage
 .profile
 .pytest_cache
 .python_history
 .Rproj.user
 .ruff_cache
+.sqlmesh
 .ssh
 .Trash-1000
 .vscode-server
