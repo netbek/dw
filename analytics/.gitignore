@@ -11,9 +11,6 @@
 .ipynb_checkpoints
 .lesshst
 .local
-.prefect/flows.json
-.prefect/memo_store.toml
-.prefect/storage
 .profile
 .pytest_cache
 .python_history
