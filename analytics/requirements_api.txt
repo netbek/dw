@@ -1,1 +1,0 @@
-litestar[standard]==2.14.0
