@@ -19,6 +19,7 @@
 .sqlmesh
 .ssh
 .Trash-1000
+.venv
 .vscode-server
 .~*
 __pycache__
