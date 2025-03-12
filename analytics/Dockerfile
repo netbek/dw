@@ -25,7 +25,7 @@ RUN apt-get autoremove --yes && \
 
 ####################################################################################################
 
-FROM prefecthq/prefect:3.0.10-python3.12 AS prefect-common
+FROM prefecthq/prefect:3.2.12-python3.12 AS prefect-common
 
 ARG DOCKER_UID
 ARG DOCKER_GID

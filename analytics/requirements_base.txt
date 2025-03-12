@@ -5,7 +5,7 @@ git+https://github.com/netbek/dbt-clickhouse.git@v1.8.9-batch
 dbt-core==1.8.9  # Pinned because of dbt-clickhouse and prefect-dbt
 httpx==0.28.1
 pandas==2.2.3
-prefect==3.0.10
+prefect==3.2.12
 prefect-dbt==0.6.4
 prefect-jupyter==0.3.1
 prefect-shell==0.3.1
