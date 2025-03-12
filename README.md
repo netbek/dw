@@ -33,11 +33,7 @@
 │   ├── .sqlfluffignore # SQL linter configuration used in CLI container
 │   ├── .yamllint # YAML linter configuration used in CLI container
 │   ├── Dockerfile
-│   ├── pyproject.toml # Configuration of Python tools in CLI container
-│   ├── requirements_api.txt # Extra Python dependencies of API container
-│   ├── requirements_base.txt # Python dependencies of all containers
-│   ├── requirements_dev.txt # Python development dependencies
-│   └── requirements_jupyter.txt # Extra Python dependencies of Jupyter container
+│   └── pyproject.toml # Python dependencies and configuration in CLI container
 ├── deploy # Deployment configuration
 ├── docs
 ├── peerdb

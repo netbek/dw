@@ -61,7 +61,7 @@ install_tilt() {
 install_peerdb() {
     echo "${tput_yellow}Installing PeerDB ...${tput_reset}"
     uninstall_peerdb
-    git clone https://github.com/PeerDB-io/peerdb --branch v0.25.1
+    git clone https://github.com/PeerDB-io/peerdb --branch v0.26.0
     echo "${tput_green}Installed PeerDB${tput_reset}"
 }
 
@@ -80,7 +80,7 @@ uninstall_peerdb() {
 
 install_uv() {
     echo "${tput_yellow}Installing uv ...${tput_reset}"
-    curl -fsSL https://astral.sh/uv/0.6.2/install.sh | sh
+    curl -fsSL https://astral.sh/uv/0.6.6/install.sh | sh
     echo "${tput_green}Installed uv${tput_reset}"
 }
 

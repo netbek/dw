@@ -82,7 +82,7 @@ destroy() {
         cd "${root_dir}/deploy/${dir}"
 
         # Delete images, volumes and networks
-        docker compose down -v --rmi all
+        docker compose down -v --rmi local
 
         # Delete images tagged by Tilt
         services=$(yq_cmd '.services | to_entries | map(select(.value.build != null) | .key) | .[]' docker-compose.yml)

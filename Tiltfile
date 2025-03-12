@@ -45,10 +45,7 @@ for service in services:
         context="./deploy/analytics",
         deps=[
             "./analytics/Dockerfile",
-            "./analytics/requirements_api.txt",
-            "./analytics/requirements_base.txt",
-            "./analytics/requirements_dev.txt",
-            "./analytics/requirements_jupyter.txt",
+            "./analytics/uv.lock",
         ],
         build_args={
             "DOCKER_UID": "$(id -u)",
