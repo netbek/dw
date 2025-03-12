@@ -80,7 +80,7 @@ uninstall_peerdb() {
 
 install_uv() {
     echo "${tput_yellow}Installing uv ...${tput_reset}"
-    curl -fsSL https://astral.sh/uv/0.6.2/install.sh | sh
+    curl -fsSL https://astral.sh/uv/0.6.6/install.sh | sh
     echo "${tput_green}Installed uv${tput_reset}"
 }
 
