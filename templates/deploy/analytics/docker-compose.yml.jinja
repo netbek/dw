@@ -104,6 +104,7 @@ services:
       - ${SSH_AUTH_SOCK}:/ssh-agent:ro
     stdin_open: true
     tty: true
+    stop_grace_period: 0s
     depends_on:
       prefect-server:
         condition: service_healthy
