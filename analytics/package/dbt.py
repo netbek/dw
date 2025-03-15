@@ -9,6 +9,7 @@ from typing import Any, List, Optional
 
 import json
 import os
+import yaml
 
 RE_REF = r"^ref\(['\"](.*?)['\"]\)$"
 RE_SOURCE = r"^source\(['\"](.*?)['\"], ['\"](.*?)['\"]\)$"
@@ -107,7 +108,8 @@ class Dbt:
             cmd.extend(["--no-use-colors"])
 
         if vars:
-            cmd.extend(["--vars", f"'{json.dumps(vars)}'"])
+            vars_yaml = yaml.safe_dump(vars, default_flow_style=False)
+            cmd.extend(["--vars", vars_yaml])
 
         return cmd
 
