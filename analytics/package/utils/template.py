@@ -6,7 +6,9 @@ from typing import Optional
 
 class EnvVars(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=list(Path("/usr/local/share/dw").glob("*.env")), extra="allow", case_sensitive=True
+        env_file=list(Path("/usr/local/share/dw").glob("*.env")),
+        extra="allow",
+        case_sensitive=True,
     )
 
 

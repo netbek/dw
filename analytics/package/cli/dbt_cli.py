@@ -45,7 +45,9 @@ def model_yaml(models: list[str]):
             continue
 
         model_name = resource.name
-        model_path = Path(os.path.join(project.dbt_directory, resource.original_file_path))
+        model_path = Path(
+            os.path.join(project.dbt_directory, resource.original_file_path)
+        )
         schema_path = os.path.join(model_path.parent, "schema", f"{model_name}.yml")
         schema_dir = os.path.dirname(schema_path)
 
@@ -84,7 +86,9 @@ def model_yaml(models: list[str]):
             json.dumps({"model_names": [model_name]}),
         ]
         try:
-            output = subprocess.check_output(cmd, cwd=project.dbt_directory).decode().strip()
+            output = (
+                subprocess.check_output(cmd, cwd=project.dbt_directory).decode().strip()
+            )
         except subprocess.CalledProcessError as exc:
             output = exc.output.decode().strip()
             app.console.print(output, style="red")

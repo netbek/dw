@@ -1,9 +1,9 @@
 from package.types import (
-    CHSettings,
+    ClickHouseSettings,
     DbtSettings,
     NotebookSettings,
     PeerDBSettings,
-    PGSettings,
+    PostgresSettings,
     PrefectSettings,
 )
 from package.utils.template import render_jinja_template
@@ -15,8 +15,8 @@ from pydantic_settings import SettingsConfigDict
 import yaml
 
 
-def create_pg_settings(env_prefix: str) -> PGSettings:
-    class Settings(PGSettings):
+def create_postgres_settings(env_prefix: str) -> PostgresSettings:
+    class Settings(PostgresSettings):
         model_config = SettingsConfigDict(
             env_file="/usr/local/share/dw/database.env", extra="ignore"
         )
@@ -49,8 +49,8 @@ def create_pg_settings(env_prefix: str) -> PGSettings:
     return Settings
 
 
-def create_ch_settings(env_prefix: str) -> CHSettings:
-    class Settings(CHSettings):
+def create_clickhouse_settings(env_prefix: str) -> ClickHouseSettings:
+    class Settings(ClickHouseSettings):
         model_config = SettingsConfigDict(
             env_file="/usr/local/share/dw/database.env", extra="ignore"
         )
@@ -108,7 +108,9 @@ def create_notebook_settings(directory: Path | str) -> NotebookSettings:
 
 def create_peerdb_settings(config_path: Path | str) -> PeerDBSettings:
     class Settings(PeerDBSettings):
-        model_config = SettingsConfigDict(env_file="/usr/local/share/dw/peerdb.env", extra="ignore")
+        model_config = SettingsConfigDict(
+            env_file="/usr/local/share/dw/peerdb.env", extra="ignore"
+        )
 
         api_url: str = Field(validation_alias="peerdb_api_url")
         config: dict = Field(

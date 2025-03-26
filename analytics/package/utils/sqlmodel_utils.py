@@ -1,5 +1,5 @@
-from package.database import CHAdapter
-from package.types import CHSettings, DbtSource
+from package.database import ClickHouseAdapter
+from package.types import ClickHouseSettings, DbtSource
 from package.utils.python_utils import is_python_keyword
 from typing import Dict, List, Optional
 
@@ -235,7 +235,7 @@ def create_factory_name(model_name: str) -> str:
 
 
 def create_model_code(
-    db_settings: CHSettings,
+    db_settings: ClickHouseSettings,
     database: str,
     dbt_resource: DbtSource,
     extend_primary_key: Optional[bool] = False,
@@ -243,10 +243,10 @@ def create_model_code(
 ) -> Dict[str, str]:
     """Create the code of a SQLModel class from a table statement."""
     # 1. Create model
-    ch_adapter = CHAdapter(db_settings)
+    clickhouse_adapter = ClickHouseAdapter(db_settings)
     table_name = dbt_resource.name
     model_name = dbt_resource.original_config.meta.python_class
-    statement = ch_adapter.get_create_table_statement(table_name, database=database)
+    statement = clickhouse_adapter.get_create_table_statement(table_name, database=database)
     parsed_statement = parse_create_table_statement(statement)
     table_kwargs = {"schema": database}
     engine = parsed_statement["engine"]
@@ -374,7 +374,7 @@ def create_model_code(
 
 
 def create_model_file(
-    db_settings: CHSettings,
+    db_settings: ClickHouseSettings,
     database: str,
     dbt_resource: DbtSource,
     directory: str,

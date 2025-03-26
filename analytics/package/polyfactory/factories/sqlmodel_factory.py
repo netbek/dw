@@ -36,4 +36,6 @@ class SQLModelFactory(ModelFactory[T]):
 
     @classmethod
     def create(cls, session, **kwargs: Any) -> T:
-        return cls._get_sync_persistence().save(session=session, data=cls.build(**kwargs))
+        return cls._get_sync_persistence().save(
+            session=session, data=cls.build(**kwargs)
+        )

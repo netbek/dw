@@ -24,14 +24,18 @@ def generate():
 
     cmd = ["dbt", "docs", "generate"]
     try:
-        output = subprocess.check_output(cmd, cwd=project.dbt_directory).decode().strip()
+        output = (
+            subprocess.check_output(cmd, cwd=project.dbt_directory).decode().strip()
+        )
     except subprocess.CalledProcessError as exc:
         output = exc.output.decode().strip()
         print(output)
         raise exc
 
     bundle_docs(project.dbt_directory)
-    docs_app.console.print(f"Generated docs '{project.dbt_docs_directory}'", style="green")
+    docs_app.console.print(
+        f"Generated docs '{project.dbt_docs_directory}'", style="green"
+    )
 
 
 @docs_app.command()

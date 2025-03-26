@@ -302,7 +302,9 @@ class Dbt:
             vars=vars,
         )
 
-        async with ShellOperation(commands=[" ".join(cmd)], working_dir=self.project_dir) as op:
+        async with ShellOperation(
+            commands=[" ".join(cmd)], working_dir=self.project_dir
+        ) as op:
             process = await op.trigger()
             await process.wait_for_completion()
             result = await process.fetch_result()

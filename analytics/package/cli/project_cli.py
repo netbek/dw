@@ -36,7 +36,9 @@ async def init(project_name: str):
 async def delete(project_name: str):
     project = Project.from_name(project_name)
 
-    confirmed = typer.confirm("Are you sure you want to delete the project's files and data?")
+    confirmed = typer.confirm(
+        "Are you sure you want to delete the project's files and data?"
+    )
     if not confirmed:
         raise typer.Abort()
 
@@ -70,7 +72,9 @@ def lint(project_name: str):
     yamllint_config_file = os.path.join(HOME_DIR, ".yamllint")
     sqlfluff_config_file = os.path.join(HOME_DIR, ".sqlfluff")
 
-    subprocess.run(f"yamllint -c {yamllint_config_file} .", shell=True, cwd=project.dbt_directory)
+    subprocess.run(
+        f"yamllint -c {yamllint_config_file} .", shell=True, cwd=project.dbt_directory
+    )
     subprocess.run(
         f"sqlfluff lint --config {sqlfluff_config_file} --ignore-local-config --ignore parsing .",
         shell=True,

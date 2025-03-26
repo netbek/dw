@@ -8,7 +8,9 @@ class TestCreateDeployment(unittest.TestCase):
         selected_names = []
         existing_names = []
 
-        actual = _build_deployment_actions(DeployAction.create, selected_names, existing_names)
+        actual = _build_deployment_actions(
+            DeployAction.create, selected_names, existing_names
+        )
         expected = []
 
         self.assertCountEqual(actual, expected)
@@ -17,7 +19,9 @@ class TestCreateDeployment(unittest.TestCase):
         selected_names = ["dep1", "dep2"]
         existing_names = []
 
-        actual = _build_deployment_actions(DeployAction.create, selected_names, existing_names)
+        actual = _build_deployment_actions(
+            DeployAction.create, selected_names, existing_names
+        )
         expected = [
             {"action": DeployAction.create, "name": "dep1"},
             {"action": DeployAction.create, "name": "dep2"},
@@ -29,7 +33,9 @@ class TestCreateDeployment(unittest.TestCase):
         selected_names = ["dep1", "dep2"]
         existing_names = ["dep1", "dep2"]
 
-        actual = _build_deployment_actions(DeployAction.create, selected_names, existing_names)
+        actual = _build_deployment_actions(
+            DeployAction.create, selected_names, existing_names
+        )
         expected = [
             {"action": DeploymentAction.resume, "name": "dep1"},
             {"action": DeploymentAction.resume, "name": "dep2"},
@@ -41,7 +47,9 @@ class TestCreateDeployment(unittest.TestCase):
         selected_names = ["dep1", "dep2"]
         existing_names = ["dep1"]
 
-        actual = _build_deployment_actions(DeployAction.create, selected_names, existing_names)
+        actual = _build_deployment_actions(
+            DeployAction.create, selected_names, existing_names
+        )
         expected = [
             {"action": DeploymentAction.resume, "name": "dep1"},
             {"action": DeployAction.create, "name": "dep2"},
@@ -55,7 +63,9 @@ class TestDeleteDeployment(unittest.TestCase):
         selected_names = []
         existing_names = []
 
-        actual = _build_deployment_actions(DeploymentAction.delete, selected_names, existing_names)
+        actual = _build_deployment_actions(
+            DeploymentAction.delete, selected_names, existing_names
+        )
         expected = []
 
         self.assertCountEqual(actual, expected)
@@ -64,7 +74,9 @@ class TestDeleteDeployment(unittest.TestCase):
         selected_names = ["dep1", "dep2"]
         existing_names = ["dep1", "dep2"]
 
-        actual = _build_deployment_actions(DeploymentAction.delete, selected_names, existing_names)
+        actual = _build_deployment_actions(
+            DeploymentAction.delete, selected_names, existing_names
+        )
         expected = [
             {"action": DeploymentAction.delete, "name": "dep1"},
             {"action": DeploymentAction.delete, "name": "dep2"},
@@ -76,7 +88,9 @@ class TestDeleteDeployment(unittest.TestCase):
         selected_names = ["dep1"]
         existing_names = ["dep1", "dep2"]
 
-        actual = _build_deployment_actions(DeploymentAction.delete, selected_names, existing_names)
+        actual = _build_deployment_actions(
+            DeploymentAction.delete, selected_names, existing_names
+        )
         expected = [{"action": DeploymentAction.delete, "name": "dep1"}]
 
         self.assertCountEqual(actual, expected)
@@ -87,7 +101,9 @@ class TestPauseDeployment(unittest.TestCase):
         selected_names = []
         existing_names = []
 
-        actual = _build_deployment_actions(DeploymentAction.pause, selected_names, existing_names)
+        actual = _build_deployment_actions(
+            DeploymentAction.pause, selected_names, existing_names
+        )
         expected = []
 
         self.assertCountEqual(actual, expected)
@@ -96,7 +112,9 @@ class TestPauseDeployment(unittest.TestCase):
         selected_names = ["dep1", "dep2"]
         existing_names = ["dep1", "dep2"]
 
-        actual = _build_deployment_actions(DeploymentAction.pause, selected_names, existing_names)
+        actual = _build_deployment_actions(
+            DeploymentAction.pause, selected_names, existing_names
+        )
         expected = [
             {"action": DeploymentAction.pause, "name": "dep1"},
             {"action": DeploymentAction.pause, "name": "dep2"},
@@ -108,7 +126,9 @@ class TestPauseDeployment(unittest.TestCase):
         selected_names = ["dep1"]
         existing_names = ["dep1", "dep2"]
 
-        actual = _build_deployment_actions(DeploymentAction.pause, selected_names, existing_names)
+        actual = _build_deployment_actions(
+            DeploymentAction.pause, selected_names, existing_names
+        )
         expected = [{"action": DeploymentAction.pause, "name": "dep1"}]
 
         self.assertCountEqual(actual, expected)
@@ -119,7 +139,9 @@ class TestResumeDeployment(unittest.TestCase):
         selected_names = []
         existing_names = []
 
-        actual = _build_deployment_actions(DeploymentAction.resume, selected_names, existing_names)
+        actual = _build_deployment_actions(
+            DeploymentAction.resume, selected_names, existing_names
+        )
         expected = []
 
         self.assertCountEqual(actual, expected)
@@ -128,7 +150,9 @@ class TestResumeDeployment(unittest.TestCase):
         selected_names = ["dep1", "dep2"]
         existing_names = ["dep1", "dep2"]
 
-        actual = _build_deployment_actions(DeploymentAction.resume, selected_names, existing_names)
+        actual = _build_deployment_actions(
+            DeploymentAction.resume, selected_names, existing_names
+        )
         expected = [
             {"action": DeploymentAction.resume, "name": "dep1"},
             {"action": DeploymentAction.resume, "name": "dep2"},
@@ -140,7 +164,9 @@ class TestResumeDeployment(unittest.TestCase):
         selected_names = ["dep1"]
         existing_names = ["dep1", "dep2"]
 
-        actual = _build_deployment_actions(DeploymentAction.resume, selected_names, existing_names)
+        actual = _build_deployment_actions(
+            DeploymentAction.resume, selected_names, existing_names
+        )
         expected = [{"action": DeploymentAction.resume, "name": "dep1"}]
 
         self.assertCountEqual(actual, expected)

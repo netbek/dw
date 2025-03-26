@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from contextlib import contextmanager
-from package.types import CHSettings, PGSettings
+from package.types import ClickHouseSettings, PostgresSettings
 from sqlalchemy import URL
 from sqlmodel import create_engine, Session, Table
 from typing import Any, Generator, List, Optional, overload
 
 
 class BaseAdapter(ABC):
-    def __init__(self, settings: CHSettings | PGSettings) -> None:
+    def __init__(self, settings: ClickHouseSettings | PostgresSettings) -> None:
         self.settings = settings
 
     @overload
@@ -65,7 +65,9 @@ class BaseAdapter(ABC):
     def has_database(self, database: str) -> bool: ...
 
     @abstractmethod
-    def create_database(self, database: str, replace: Optional[bool] = False) -> None: ...
+    def create_database(
+        self, database: str, replace: Optional[bool] = False
+    ) -> None: ...
 
     @abstractmethod
     def drop_database(self, database: str) -> None: ...
@@ -75,7 +77,10 @@ class BaseAdapter(ABC):
 
     @abstractmethod
     def create_schema(
-        self, schema: str, database: Optional[str] = None, replace: Optional[bool] = False
+        self,
+        schema: str,
+        database: Optional[str] = None,
+        replace: Optional[bool] = False,
     ) -> None: ...
 
     @abstractmethod
@@ -120,7 +125,9 @@ class BaseAdapter(ABC):
 
     @overload
     @abstractmethod
-    def get_create_table_statement(self, table: str, database: Optional[str] = None) -> None: ...
+    def get_create_table_statement(
+        self, table: str, database: Optional[str] = None
+    ) -> None: ...
 
     @overload
     @abstractmethod
@@ -172,7 +179,9 @@ class BaseAdapter(ABC):
 
     @overload
     @abstractmethod
-    def get_table_replica_identity(self, table: str, database: Optional[str] = None) -> None: ...
+    def get_table_replica_identity(
+        self, table: str, database: Optional[str] = None
+    ) -> None: ...
 
     @overload
     @abstractmethod
@@ -211,7 +220,9 @@ class BaseAdapter(ABC):
 
     @overload
     @abstractmethod
-    def drop_tables(self, database: Optional[str] = None, schema: Optional[str] = None) -> None: ...
+    def drop_tables(
+        self, database: Optional[str] = None, schema: Optional[str] = None
+    ) -> None: ...
 
     @abstractmethod
     def drop_tables(self, *args, **kwargs) -> None: ...

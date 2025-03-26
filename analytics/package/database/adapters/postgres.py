@@ -1,7 +1,7 @@
 from collections.abc import Generator
 from contextlib import contextmanager
 from package.database.adapters.base import BaseAdapter
-from package.types import PGIdentifier, PGSettings, PGTableIdentifier
+from package.types import PostgresIdentifier, PostgresSettings, PostgresTableIdentifier
 from sqlalchemy import URL
 from sqlmodel import create_engine, MetaData, Table
 from typing import Any, List, Optional
@@ -10,8 +10,8 @@ import psycopg2
 import pydash
 
 
-class PGAdapter(BaseAdapter):
-    def __init__(self, settings: PGSettings) -> None:
+class PostgresAdapter(BaseAdapter):
+    def __init__(self, settings: PostgresSettings) -> None:
         super().__init__(settings)
 
     @classmethod
@@ -47,7 +47,9 @@ class PGAdapter(BaseAdapter):
     @contextmanager
     def create_client(
         self, autocommit: bool = True
-    ) -> Generator[tuple[psycopg2.extensions.connection, psycopg2.extensions.cursor], Any, None]:
+    ) -> Generator[
+        tuple[psycopg2.extensions.connection, psycopg2.extensions.cursor], Any, None
+    ]:
         connection = psycopg2.connect(
             host=self.settings.host,
             port=self.settings.port,
@@ -101,7 +103,10 @@ class PGAdapter(BaseAdapter):
         return result
 
     def create_schema(
-        self, schema: str, database: Optional[str] = None, replace: Optional[bool] = False
+        self,
+        schema: str,
+        database: Optional[str] = None,
+        replace: Optional[bool] = False,
     ) -> None:
         raise NotImplementedError()
 
@@ -125,7 +130,9 @@ class PGAdapter(BaseAdapter):
         """
 
         with self.create_client() as (conn, cur):
-            cur.execute(statement, {"database": database, "schema": schema, "table": table})
+            cur.execute(
+                statement, {"database": database, "schema": schema, "table": table}
+            )
             result = bool(cur.fetchall())
 
         return result
@@ -170,7 +177,9 @@ class PGAdapter(BaseAdapter):
         if not self.has_table(table=table, database=database, schema=schema):
             return
 
-        quoted_table = PGTableIdentifier(database=database, schema_=schema, table=table).to_string()
+        quoted_table = PostgresTableIdentifier(
+            database=database, schema_=schema, table=table
+        ).to_string()
         statement = f"drop table {quoted_table};"
 
         with self.create_client() as (conn, cur):
@@ -188,7 +197,9 @@ class PGAdapter(BaseAdapter):
         if not self.has_table(table=table, database=database, schema=schema):
             return
 
-        quoted_table = PGTableIdentifier(database=database, schema_=schema, table=table).to_string()
+        quoted_table = PostgresTableIdentifier(
+            database=database, schema_=schema, table=table
+        ).to_string()
         statement = f"truncate table {quoted_table};"
 
         with self.create_client() as (conn, cur):
@@ -204,7 +215,9 @@ class PGAdapter(BaseAdapter):
             schema = self.settings.schema_
 
         url = self.create_url(
-            **self.settings.model_copy(update={"database": database}).model_dump(by_alias=True)
+            **self.settings.model_copy(update={"database": database}).model_dump(
+                by_alias=True
+            )
         )
         engine = create_engine(url, echo=False)
         metadata = MetaData(schema=schema)
@@ -244,7 +257,9 @@ class PGAdapter(BaseAdapter):
         """
 
         with self.create_client() as (conn, cur):
-            cur.execute(statement, {"database": database, "schema": schema, "table": table})
+            cur.execute(
+                statement, {"database": database, "schema": schema, "table": table}
+            )
             result = cur.fetchone()[0]
 
         return result
@@ -265,13 +280,17 @@ class PGAdapter(BaseAdapter):
         if not self.has_table(table=table, database=database, schema=schema):
             return
 
-        quoted_table = PGTableIdentifier(database=database, schema_=schema, table=table).to_string()
+        quoted_table = PostgresTableIdentifier(
+            database=database, schema_=schema, table=table
+        ).to_string()
         statement = f"alter table {quoted_table} replica identity {replica_identity};"
 
         with self.create_client() as (conn, cur):
             cur.execute(statement)
 
-    def drop_tables(self, database: Optional[str] = None, schema: Optional[str] = None) -> None:
+    def drop_tables(
+        self, database: Optional[str] = None, schema: Optional[str] = None
+    ) -> None:
         if database is None:
             database = self.settings.database
 
@@ -291,7 +310,9 @@ class PGAdapter(BaseAdapter):
             schema = self.settings.schema_
 
         url = self.create_url(
-            **self.settings.model_copy(update={"database": database}).model_dump(by_alias=True)
+            **self.settings.model_copy(update={"database": database}).model_dump(
+                by_alias=True
+            )
         )
         engine = create_engine(url, echo=False)
         metadata = MetaData(schema=schema)
@@ -325,7 +346,7 @@ class PGAdapter(BaseAdapter):
             else:
                 return
 
-        quoted_username = PGIdentifier.quote(username)
+        quoted_username = PostgresIdentifier.quote(username)
 
         computed_options = []
         if options:
@@ -346,7 +367,7 @@ class PGAdapter(BaseAdapter):
         if not self.has_user(username):
             return
 
-        quoted_username = PGIdentifier.quote(username)
+        quoted_username = PostgresIdentifier.quote(username)
         statement = f"""
         drop owned by {quoted_username} cascade;
         drop user {quoted_username};
@@ -359,8 +380,8 @@ class PGAdapter(BaseAdapter):
         if not self.has_user(username):
             raise Exception()
 
-        quoted_username = PGIdentifier.quote(username)
-        quoted_schema = PGIdentifier.quote(schema)
+        quoted_username = PostgresIdentifier.quote(username)
+        quoted_schema = PostgresIdentifier.quote(schema)
         statement = f"""
         grant usage on schema {quoted_schema} to {quoted_username};
         grant select on all tables in schema {quoted_schema} to {quoted_username};
@@ -374,8 +395,8 @@ class PGAdapter(BaseAdapter):
         if not self.has_user(username):
             return
 
-        quoted_username = PGIdentifier.quote(username)
-        quoted_schema = PGIdentifier.quote(schema)
+        quoted_username = PostgresIdentifier.quote(username)
+        quoted_schema = PostgresIdentifier.quote(schema)
         statement = f"""
         alter default privileges for user {quoted_username} in schema {quoted_schema} revoke select on tables from {quoted_username};
         revoke select on all tables in schema {quoted_schema} from {quoted_username};
@@ -416,15 +437,19 @@ class PGAdapter(BaseAdapter):
 
         return result
 
-    def create_publication(self, publication: str, tables: List[str], replace=False) -> None:
+    def create_publication(
+        self, publication: str, tables: List[str], replace=False
+    ) -> None:
         if self.has_publication(publication):
             if replace:
                 self.drop_publication(publication)
             else:
                 raise Exception()
 
-        quoted_publication = PGIdentifier.quote(publication)
-        quoted_tables = [PGTableIdentifier.from_string(table).to_string() for table in tables]
+        quoted_publication = PostgresIdentifier.quote(publication)
+        quoted_tables = [
+            PostgresTableIdentifier.from_string(table).to_string() for table in tables
+        ]
         statement = f"create publication {quoted_publication} for table {', '.join(quoted_tables)};"
 
         with self.create_client() as (conn, cur):
@@ -434,7 +459,7 @@ class PGAdapter(BaseAdapter):
         if not self.has_publication(publication):
             return
 
-        quoted_publication = PGIdentifier.quote(publication)
+        quoted_publication = PostgresIdentifier.quote(publication)
         statement = f"drop publication {quoted_publication};"
 
         with self.create_client() as (conn, cur):

@@ -2,7 +2,7 @@ from clickhouse_connect.driver.client import Client
 from collections.abc import Generator
 from contextlib import contextmanager
 from package.database.adapters.base import BaseAdapter
-from package.types import CHIdentifier, CHSettings, CHTableIdentifier
+from package.types import ClickHouseIdentifier, ClickHouseSettings, ClickHouseTableIdentifier
 from sqlalchemy import URL
 from sqlmodel import create_engine, MetaData, Table
 from typing import List, Optional
@@ -11,8 +11,8 @@ import clickhouse_connect
 import pydash
 
 
-class CHAdapter(BaseAdapter):
-    def __init__(self, settings: CHSettings) -> None:
+class ClickHouseAdapter(BaseAdapter):
+    def __init__(self, settings: ClickHouseSettings) -> None:
         super().__init__(settings)
 
     @classmethod
@@ -83,7 +83,9 @@ class CHAdapter(BaseAdapter):
         statement = "select 1 from system.databases where name = {database:String};"
 
         with self.create_client() as client:
-            result = bool(client.query(statement, parameters={"database": database}).result_rows)
+            result = bool(
+                client.query(statement, parameters={"database": database}).result_rows
+            )
 
         return result
 
@@ -112,7 +114,10 @@ class CHAdapter(BaseAdapter):
         raise NotImplementedError()
 
     def create_schema(
-        self, schema: str, database: Optional[str] = None, replace: Optional[bool] = False
+        self,
+        schema: str,
+        database: Optional[str] = None,
+        replace: Optional[bool] = False,
     ) -> None:
         raise NotImplementedError()
 
@@ -153,14 +158,18 @@ class CHAdapter(BaseAdapter):
         with self.create_client() as client:
             client.command(statement)
 
-    def get_create_table_statement(self, table: str, database: Optional[str] = None) -> None:
+    def get_create_table_statement(
+        self, table: str, database: Optional[str] = None
+    ) -> None:
         if database is None:
             database = self.settings.database
 
         statement = "show create table {database:Identifier}.{table:Identifier};"
 
         with self.create_client() as client:
-            statement = client.command(statement, parameters={"database": database, "table": table})
+            statement = client.command(
+                statement, parameters={"database": database, "table": table}
+            )
             statement = statement.replace("\\n", "\n")
 
         return statement
@@ -172,7 +181,9 @@ class CHAdapter(BaseAdapter):
         if not self.has_table(table=table, database=database):
             return
 
-        quoted_table = CHTableIdentifier(database=database, table=table).to_string()
+        quoted_table = ClickHouseTableIdentifier(
+            database=database, table=table
+        ).to_string()
         statement = f"drop table {quoted_table};"
 
         with self.create_client() as client:
@@ -185,7 +196,9 @@ class CHAdapter(BaseAdapter):
         if not self.has_table(table=table, database=database):
             return
 
-        quoted_table = CHTableIdentifier(database=database, table=table).to_string()
+        quoted_table = ClickHouseTableIdentifier(
+            database=database, table=table
+        ).to_string()
         statement = f"truncate table {quoted_table};"
 
         with self.create_client() as client:
@@ -202,7 +215,9 @@ class CHAdapter(BaseAdapter):
 
         return metadata.tables.get(f"{database}.{table}")
 
-    def get_table_replica_identity(self, table: str, database: Optional[str] = None) -> None:
+    def get_table_replica_identity(
+        self, table: str, database: Optional[str] = None
+    ) -> None:
         raise NotImplementedError()
 
     def set_table_replica_identity(
@@ -232,18 +247,22 @@ class CHAdapter(BaseAdapter):
         statement = "select 1 from system.users where name = {username:String};"
 
         with self.create_client() as client:
-            result = bool(client.query(statement, parameters={"username": username}).result_rows)
+            result = bool(
+                client.query(statement, parameters={"username": username}).result_rows
+            )
 
         return result
 
-    def create_user(self, username: str, password: str, replace: Optional[bool] = False) -> None:
+    def create_user(
+        self, username: str, password: str, replace: Optional[bool] = False
+    ) -> None:
         if self.has_user(username):
             if replace:
                 self.drop_user(username)
             else:
                 return
 
-        quoted_username = CHIdentifier.quote(username)
+        quoted_username = ClickHouseIdentifier.quote(username)
         statement = f"create user {quoted_username} identified by %(password)s;"
 
         with self.create_client() as client:
@@ -253,7 +272,7 @@ class CHAdapter(BaseAdapter):
         if not self.has_user(username):
             return
 
-        quoted_username = CHIdentifier.quote(username)
+        quoted_username = ClickHouseIdentifier.quote(username)
         statement = f"drop user {quoted_username};"
 
         with self.create_client() as client:

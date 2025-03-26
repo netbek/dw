@@ -43,14 +43,19 @@ class Project:
         if os.path.isfile(child_dir):
             child_dir = os.path.dirname(child_dir)
 
-        if parent_dir == child_dir or os.path.commonpath([parent_dir, child_dir]) != parent_dir:
+        if (
+            parent_dir == child_dir
+            or os.path.commonpath([parent_dir, child_dir]) != parent_dir
+        ):
             raise Exception(f"Path must be a subdirectory of {PROJECTS_DIR}")
 
         return os.path.relpath(child_dir, parent_dir).split(os.path.sep)[0]
 
     @classmethod
     def exists(cls, name: str) -> bool:
-        return bool([project for project in cls.list_projects() if project.name == name])
+        return bool(
+            [project for project in cls.list_projects() if project.name == name]
+        )
 
     @classmethod
     def list_projects(cls) -> List["Project"]:
@@ -65,7 +70,9 @@ class Project:
             raise Exception("Name must be 1 or more characters long")
 
         if not re.match("^[a-z0-9_]+$", name):
-            raise Exception("Name must contain only lowercase letters, numbers or underscore")
+            raise Exception(
+                "Name must contain only lowercase letters, numbers or underscore"
+            )
 
         if not name[0].isalpha():
             raise Exception("Name must start with a letter")

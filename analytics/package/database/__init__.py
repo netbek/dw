@@ -1,9 +1,9 @@
 __all__ = [
-    "CHAdapter",
-    "PGAdapter",
+    "ClickHouseAdapter",
+    "PostgresAdapter",
     "render_statement",
 ]
 
-from .adapters.clickhouse import CHAdapter
-from .adapters.postgres import PGAdapter
+from .adapters.clickhouse import ClickHouseAdapter
+from .adapters.postgres import PostgresAdapter
 from .utils import render_statement
