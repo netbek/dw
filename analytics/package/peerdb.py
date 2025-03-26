@@ -1,12 +1,12 @@
 from package.config.constants import PEERDB_SOURCE_PEER
-from package.database import CHAdapter, PGAdapter
+from package.database import ClickHouseAdapter, PostgresAdapter
 from package.dbt import Dbt
 from package.types import (
-    CHSettings,
-    CHTableIdentifier,
+    ClickHouseSettings,
+    ClickHouseTableIdentifier,
     DbtResourceType,
-    PGSettings,
-    PGTableIdentifier,
+    PostgresSettings,
+    PostgresTableIdentifier,
 )
 from pathlib import Path
 from typing import Optional
@@ -16,8 +16,8 @@ import httpx
 import pydash
 
 
-def to_ch_settings(clickhouse_config: dict) -> CHSettings:
-    return CHSettings(
+def to_clickhouse_settings(clickhouse_config: dict) -> ClickHouseSettings:
+    return ClickHouseSettings(
         host=clickhouse_config["host"],
         port=clickhouse_config["port"],
         username=clickhouse_config["user"],
@@ -28,8 +28,8 @@ def to_ch_settings(clickhouse_config: dict) -> CHSettings:
     )
 
 
-def to_pg_settings(postgres_config: dict) -> PGSettings:
-    return PGSettings(
+def to_postgres_settings(postgres_config: dict) -> PostgresSettings:
+    return PostgresSettings(
         host=postgres_config["host"],
         port=postgres_config["port"],
         username=postgres_config["user"],
@@ -103,14 +103,18 @@ class PeerDB:
                 source_peer = result["peers"].get(PEERDB_SOURCE_PEER)
 
                 if not source_peer:
-                    raise Exception(f"Peer '{PEERDB_SOURCE_PEER}' not found in PeerDB config")
+                    raise Exception(
+                        f"Peer '{PEERDB_SOURCE_PEER}' not found in PeerDB config"
+                    )
 
-                pg_settings = to_pg_settings(source_peer["postgres_config"])
-                source_adapter = PGAdapter(pg_settings)
+                postgres_settings = to_postgres_settings(source_peer["postgres_config"])
+                source_adapter = PostgresAdapter(postgres_settings)
                 source_tables = source_adapter.list_tables()
 
                 dbt = Dbt(dbt_project_dir)
-                dbt_sources = dbt.list_resources(resource_types=[DbtResourceType.SOURCE])
+                dbt_sources = dbt.list_resources(
+                    resource_types=[DbtResourceType.SOURCE]
+                )
 
                 # Validate the table mappings and compute the excluded columns
                 for mirror in result["mirrors"].values():
@@ -118,7 +122,7 @@ class PeerDB:
 
                     for table_mapping in mirror["table_mappings"]:
                         # Find the source table in the source database
-                        source_table_identifier = PGTableIdentifier.from_string(
+                        source_table_identifier = PostgresTableIdentifier.from_string(
                             table_mapping["source_table_identifier"]
                         )
                         source_table = pydash.find(
@@ -135,12 +139,15 @@ class PeerDB:
                             )
 
                         # Find the destination table in the dbt sources config
-                        destination_table_identifier = CHTableIdentifier.from_string(
-                            table_mapping["destination_table_identifier"]
+                        destination_table_identifier = (
+                            ClickHouseTableIdentifier.from_string(
+                                table_mapping["destination_table_identifier"]
+                            )
                         )
                         dbt_source = pydash.find(
                             dbt_sources,
-                            lambda source: source.name == destination_table_identifier.table,
+                            lambda source: source.name
+                            == destination_table_identifier.table,
                         )
 
                         if dbt_source is None:
@@ -149,11 +156,15 @@ class PeerDB:
                             )
 
                         # Compute the excluded columns (difference between source and destination tables)
-                        source_columns = [str(column.name) for column in source_table.columns]
+                        source_columns = [
+                            str(column.name) for column in source_table.columns
+                        ]
                         dbt_source_columns = [
                             column.name for column in dbt_source.original_config.columns
                         ]
-                        computed_exclude = pydash.difference(source_columns, dbt_source_columns)
+                        computed_exclude = pydash.difference(
+                            source_columns, dbt_source_columns
+                        )
                         computed_exclude = sorted(computed_exclude)
 
                         # Compute the table mapping
@@ -177,12 +188,14 @@ class PeerDB:
 
         for value in result["publications"].values():
             for identifier in value["table_identifiers"]:
-                source_table_identifier = PGTableIdentifier.from_string(identifier)
+                source_table_identifier = PostgresTableIdentifier.from_string(
+                    identifier
+                )
                 publication_schemas.append(source_table_identifier.schema_)
 
         for value in result["mirrors"].values():
             for table_mapping in value["table_mappings"]:
-                source_table_identifier = PGTableIdentifier.from_string(
+                source_table_identifier = PostgresTableIdentifier.from_string(
                     table_mapping["source_table_identifier"]
                 )
                 publication_schemas.append(source_table_identifier.schema_)
@@ -286,13 +299,15 @@ class PeerDB:
                 )
 
 
-class SourcePeer(PGAdapter):
+class SourcePeer(PostgresAdapter):
     def create_user(self, username: str, password: str) -> None:
-        return super().create_user(username, password, options={"login": True, "replication": True})
+        return super().create_user(
+            username, password, options={"login": True, "replication": True}
+        )
 
 
-class DestinationPeer(CHAdapter):
-    def __init__(self, db_settings: CHSettings, database: str) -> None:
+class DestinationPeer(ClickHouseAdapter):
+    def __init__(self, db_settings: ClickHouseSettings, database: str) -> None:
         self._database = database
         super().__init__(db_settings)
 

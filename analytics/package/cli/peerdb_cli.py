@@ -2,7 +2,7 @@ from package.cli.root import app
 from package.config.constants import PEERDB_DESTINATION_PEER, PEERDB_SOURCE_PEER
 from package.peerdb import DestinationPeer, PeerDB, SourcePeer
 from package.project import Project
-from package.types import PGTableIdentifier
+from package.types import PostgresTableIdentifier
 from package.utils.typer_utils import typer_async
 
 import typer
@@ -24,7 +24,9 @@ async def install(project_name: str) -> None:
     source_peer = SourcePeer(project.settings.source_db)
     destination_peer = DestinationPeer(
         project.settings.destination_db,
-        peerdb_config["peers"][PEERDB_DESTINATION_PEER]["clickhouse_config"]["database"],
+        peerdb_config["peers"][PEERDB_DESTINATION_PEER]["clickhouse_config"][
+            "database"
+        ],
     )
     source_user = peerdb_config["users"].get(PEERDB_SOURCE_PEER)
 
@@ -48,7 +50,7 @@ async def install(project_name: str) -> None:
     for mirror in peerdb_config["mirrors"].values():
         for table_mapping in mirror["table_mappings"]:
             if "replica_identity" in table_mapping:
-                source_table_identifier = PGTableIdentifier.from_string(
+                source_table_identifier = PostgresTableIdentifier.from_string(
                     table_mapping["source_table_identifier"]
                 )
                 source_peer.set_table_replica_identity(
@@ -105,7 +107,9 @@ async def uninstall(project_name: str) -> None:
     source_peer = SourcePeer(project.settings.source_db)
     destination_peer = DestinationPeer(
         project.settings.destination_db,
-        peerdb_config["peers"][PEERDB_DESTINATION_PEER]["clickhouse_config"]["database"],
+        peerdb_config["peers"][PEERDB_DESTINATION_PEER]["clickhouse_config"][
+            "database"
+        ],
     )
     source_user = peerdb_config["users"].get(PEERDB_SOURCE_PEER)
 
@@ -133,7 +137,7 @@ async def uninstall(project_name: str) -> None:
     for mirror in peerdb_config["mirrors"].values():
         for table_mapping in mirror["table_mappings"]:
             if "replica_identity" in table_mapping:
-                source_table_identifier = PGTableIdentifier.from_string(
+                source_table_identifier = PostgresTableIdentifier.from_string(
                     table_mapping["source_table_identifier"]
                 )
                 replica_identity = "default"

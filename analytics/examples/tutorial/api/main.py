@@ -1,9 +1,9 @@
 from litestar import get, Litestar
-from package.database import CHAdapter
+from package.database import ClickHouseAdapter
 from projects.tutorial.config.settings import get_settings
 
 settings = get_settings()
-db = CHAdapter(settings.destination_db)
+db = ClickHouseAdapter(settings.destination_db)
 
 
 @get("/")

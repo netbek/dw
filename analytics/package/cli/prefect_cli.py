@@ -100,10 +100,14 @@ async def provision(
                     work_pool["name"],
                     WorkPoolUpdate(concurrency_limit=work_pool["concurrency_limit"]),
                 )
-                app.console.print(f"Updated work pool '{work_pool['name']}'", style="green")
+                app.console.print(
+                    f"Updated work pool '{work_pool['name']}'", style="green"
+                )
             else:
                 await client.create_work_pool(WorkPoolCreate(**work_pool))
-                app.console.print(f"Created work pool '{work_pool['name']}'", style="green")
+                app.console.print(
+                    f"Created work pool '{work_pool['name']}'", style="green"
+                )
 
 
 @prefect_app.command()
@@ -147,11 +151,15 @@ async def deploy(
             app.console.print(exc.message, style="red")
             return
 
-        create_names = [d["name"] for d in deployment_actions if d["action"] == DeployAction.create]
+        create_names = [
+            d["name"] for d in deployment_actions if d["action"] == DeployAction.create
+        ]
 
         for name in create_names:
             create_deployments = [
-                deployment for deployment in deploy_configs if deployment["name"] == name
+                deployment
+                for deployment in deploy_configs
+                if deployment["name"] == name
             ]
 
             for deployment in create_deployments:
@@ -169,24 +177,34 @@ async def deploy(
             deployments = [d for d in deployments if d.name == name]
 
             for deployment in deployments:
-                app.console.print(f"Created deployment '{deployment.name}'", style="green")
+                app.console.print(
+                    f"Created deployment '{deployment.name}'", style="green"
+                )
 
                 if pause:
                     await client.set_deployment_paused_state(deployment.id, True)
-                    app.console.print(f"Paused deployment '{deployment.name}'", style="green")
+                    app.console.print(
+                        f"Paused deployment '{deployment.name}'", style="green"
+                    )
 
         update_names = [
-            d["name"] for d in deployment_actions if d["action"] == DeploymentAction.resume
+            d["name"]
+            for d in deployment_actions
+            if d["action"] == DeploymentAction.resume
         ]
         update_deployments = [d for d in existing if d.name in update_names]
 
         for deployment in update_deployments:
             if pause:
                 await client.set_deployment_paused_state(deployment.id, True)
-                app.console.print(f"Paused deployment '{deployment.name}'", style="green")
+                app.console.print(
+                    f"Paused deployment '{deployment.name}'", style="green"
+                )
             else:
                 await client.set_deployment_paused_state(deployment.id, False)
-                app.console.print(f"Resumed deployment '{deployment.name}'", style="green")
+                app.console.print(
+                    f"Resumed deployment '{deployment.name}'", style="green"
+                )
 
 
 @prefect_app.command()
@@ -223,12 +241,16 @@ async def deployment(
             selected_names = pydash.intersection(selected_names, existing_names)
 
         try:
-            deployment_actions = _build_deployment_actions(action, selected_names, existing_names)
+            deployment_actions = _build_deployment_actions(
+                action, selected_names, existing_names
+            )
         except Exception as exc:
             app.console.print(exc.message, style="red")
             return
 
-        deployment_names = [d["name"] for d in deployment_actions if d["action"] == action]
+        deployment_names = [
+            d["name"] for d in deployment_actions if d["action"] == action
+        ]
         deployments = [d for d in existing if d.name in deployment_names]
 
         for deployment in deployments:
@@ -253,7 +275,9 @@ async def delete_deployment(client: PrefectClient, deployment_id: UUID):
         # Get a list of deployments of the flow other than the given deployment
         other_deployments = await client.read_deployments()
         other_deployments = [
-            d for d in other_deployments if d.flow_id == flow.id and d.id != deployment.id
+            d
+            for d in other_deployments
+            if d.flow_id == flow.id and d.id != deployment.id
         ]
 
         if not other_deployments:
@@ -287,13 +311,16 @@ async def delete_flow(client: PrefectClient, flow_id: UUID):
 
 
 def _load_deploy_configs(
-    project_names: Optional[list[str]] = None, deployment_names: Optional[list[str]] = None
+    project_names: Optional[list[str]] = None,
+    deployment_names: Optional[list[str]] = None,
 ):
     deploy_configs = []
     all_projects = Project.list_projects()
 
     if project_names:
-        selected_projects = [project for project in all_projects if project.name in project_names]
+        selected_projects = [
+            project for project in all_projects if project.name in project_names
+        ]
     else:
         selected_projects = all_projects
 

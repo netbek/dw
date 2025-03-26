@@ -1,5 +1,5 @@
 from package.config.settings import get_settings
-from package.database import PGAdapter
+from package.database import PostgresAdapter
 from package.peerdb import PeerDB
 from package.tests.fixtures.database import DBTest
 from package.types import DbtSource
@@ -166,17 +166,17 @@ list_resources__return_value = [DbtSource(**source) for source in list_resources
 
 class TestEmptyPeerDBConfig(DBTest):
     @pytest.fixture(scope="function")
-    def pg_tables(self, pg_adapter: PGAdapter) -> Generator[List[Table], Any, None]:
+    def pg_tables(self, postgres_adapter: PostgresAdapter) -> Generator[List[Table], Any, None]:
         for table_def in table_defs:
-            pg_adapter.create_table(*table_def)
+            postgres_adapter.create_table(*table_def)
 
         table_names = [table_def[0] for table_def in table_defs]
-        tables = [table for table in pg_adapter.list_tables() if table.name in table_names]
+        tables = [table for table in postgres_adapter.list_tables() if table.name in table_names]
 
         yield tables
 
         for table_name in table_names:
-            pg_adapter.drop_table(table_name)
+            postgres_adapter.drop_table(table_name)
 
     def test_func(self, pg_tables: List[Table]):
         peerdb_config = {}
@@ -194,17 +194,17 @@ class TestEmptyPeerDBConfig(DBTest):
 
 class TestSourcePeerMissingTable(DBTest):
     @pytest.fixture(scope="function")
-    def pg_tables(self, pg_adapter: PGAdapter) -> Generator[List[Table], Any, None]:
+    def pg_tables(self, postgres_adapter: PostgresAdapter) -> Generator[List[Table], Any, None]:
         for table_def in table_defs[:1]:
-            pg_adapter.create_table(*table_def)
+            postgres_adapter.create_table(*table_def)
 
         table_names = [table_def[0] for table_def in table_defs[:1]]
-        tables = [table for table in pg_adapter.list_tables() if table.name in table_names]
+        tables = [table for table in postgres_adapter.list_tables() if table.name in table_names]
 
         yield tables
 
         for table_name in table_names:
-            pg_adapter.drop_table(table_name)
+            postgres_adapter.drop_table(table_name)
 
     @pytest.fixture(scope="function")
     def list_resources(self, monkeypatch) -> None:
@@ -226,17 +226,17 @@ class TestSourcePeerMissingTable(DBTest):
 
 class TestDbtMissingTable(DBTest):
     @pytest.fixture(scope="function")
-    def pg_tables(self, pg_adapter: PGAdapter) -> Generator[List[Table], Any, None]:
+    def pg_tables(self, postgres_adapter: PostgresAdapter) -> Generator[List[Table], Any, None]:
         for table_def in table_defs:
-            pg_adapter.create_table(*table_def)
+            postgres_adapter.create_table(*table_def)
 
         table_names = [table_def[0] for table_def in table_defs]
-        tables = [table for table in pg_adapter.list_tables() if table.name in table_names]
+        tables = [table for table in postgres_adapter.list_tables() if table.name in table_names]
 
         yield tables
 
         for table_name in table_names:
-            pg_adapter.drop_table(table_name)
+            postgres_adapter.drop_table(table_name)
 
     @pytest.fixture(scope="function")
     def list_resources(self, monkeypatch) -> None:
@@ -256,17 +256,17 @@ class TestDbtMissingTable(DBTest):
 
 class TestOK(DBTest):
     @pytest.fixture(scope="function")
-    def pg_tables(self, pg_adapter: PGAdapter) -> Generator[List[Table], Any, None]:
+    def pg_tables(self, postgres_adapter: PostgresAdapter) -> Generator[List[Table], Any, None]:
         for table_def in table_defs:
-            pg_adapter.create_table(*table_def)
+            postgres_adapter.create_table(*table_def)
 
         table_names = [table_def[0] for table_def in table_defs]
-        tables = [table for table in pg_adapter.list_tables() if table.name in table_names]
+        tables = [table for table in postgres_adapter.list_tables() if table.name in table_names]
 
         yield tables
 
         for table_name in table_names:
-            pg_adapter.drop_table(table_name)
+            postgres_adapter.drop_table(table_name)
 
     @pytest.fixture(scope="function")
     def list_resources(self, monkeypatch) -> None:

@@ -1,5 +1,5 @@
 from package.config.settings import get_settings
-from package.database import CHAdapter, PGAdapter
+from package.database import ClickHouseAdapter, PostgresAdapter
 from sqlmodel import Session
 from typing import Any, Generator
 
@@ -10,12 +10,12 @@ settings = get_settings()
 
 class DBTest:
     @pytest.fixture(scope="session")
-    def ch_adapter(self) -> Generator[CHAdapter, Any, None]:
-        yield CHAdapter(settings.test_clickhouse)
+    def clickhouse_adapter(self) -> Generator[ClickHouseAdapter, Any, None]:
+        yield ClickHouseAdapter(settings.test_clickhouse)
 
     @pytest.fixture(scope="function")
-    def ch_session(self, ch_adapter: CHAdapter) -> Generator[Session, Any, None]:
-        with ch_adapter.create_engine() as engine:
+    def ch_session(self, clickhouse_adapter: ClickHouseAdapter) -> Generator[Session, Any, None]:
+        with clickhouse_adapter.create_engine() as engine:
             session = Session(engine)
 
         yield session
@@ -23,5 +23,5 @@ class DBTest:
         session.close()
 
     @pytest.fixture(scope="session")
-    def pg_adapter(self) -> Generator[PGAdapter, Any, None]:
-        yield PGAdapter(settings.test_postgres)
+    def postgres_adapter(self) -> Generator[PostgresAdapter, Any, None]:
+        yield PostgresAdapter(settings.test_postgres)

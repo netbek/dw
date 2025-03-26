@@ -5,7 +5,7 @@ from pydantic_settings import BaseSettings
 from typing import Dict, List, Optional
 
 
-class CHSettings(BaseSettings):
+class ClickHouseSettings(BaseSettings):
     host: str
     http_port: int
     tcp_port: int
@@ -17,12 +17,12 @@ class CHSettings(BaseSettings):
 
     @property
     def url(self) -> str:
-        from package.database import CHAdapter
+        from package.database import ClickHouseAdapter
 
-        return CHAdapter.create_url(**self.model_dump(by_alias=True))
+        return ClickHouseAdapter.create_url(**self.model_dump(by_alias=True))
 
 
-class PGSettings(BaseSettings):
+class PostgresSettings(BaseSettings):
     host: str
     port: int
     username: str
@@ -32,9 +32,9 @@ class PGSettings(BaseSettings):
 
     @property
     def url(self) -> str:
-        from package.database import PGAdapter
+        from package.database import PostgresAdapter
 
-        return PGAdapter.create_url(**self.model_dump(by_alias=True))
+        return PostgresAdapter.create_url(**self.model_dump(by_alias=True))
 
 
 class DbtSettings(BaseSettings):
@@ -54,7 +54,7 @@ class NotebookSettings(BaseSettings):
     directory: Path | str
 
 
-class CHIdentifier:
+class ClickHouseIdentifier:
     @classmethod
     def quote(cls, identifier: str) -> str:
         return f"`{identifier}`"
@@ -64,12 +64,12 @@ class CHIdentifier:
         return identifier.strip("`")
 
 
-class CHTableIdentifier(CHIdentifier, BaseModel):
+class ClickHouseTableIdentifier(ClickHouseIdentifier, BaseModel):
     database: Optional[str] = Field(default=None, serialization_alias="database")
     table: str = Field(serialization_alias="table")
 
     @classmethod
-    def from_string(cls, identifier: str) -> "CHTableIdentifier":
+    def from_string(cls, identifier: str) -> "ClickHouseTableIdentifier":
         parts = [cls.unquote(part) for part in identifier.split(".")]
 
         if len(parts) == 2:
@@ -86,7 +86,7 @@ class CHTableIdentifier(CHIdentifier, BaseModel):
             return self.quote(self.table)
 
 
-class PGIdentifier:
+class PostgresIdentifier:
     @classmethod
     def quote(cls, identifier: str) -> str:
         return f'"{identifier}"'
@@ -96,13 +96,13 @@ class PGIdentifier:
         return identifier.strip('"')
 
 
-class PGTableIdentifier(PGIdentifier, BaseModel):
+class PostgresTableIdentifier(PostgresIdentifier, BaseModel):
     database: Optional[str] = Field(default=None, serialization_alias="database")
     schema_: Optional[str] = Field(default=None, serialization_alias="schema")
     table: str = Field(serialization_alias="table")
 
     @classmethod
-    def from_string(cls, identifier: str) -> "PGTableIdentifier":
+    def from_string(cls, identifier: str) -> "PostgresTableIdentifier":
         parts = [cls.unquote(part) for part in identifier.split(".")]
 
         if len(parts) == 3:
@@ -116,9 +116,7 @@ class PGTableIdentifier(PGIdentifier, BaseModel):
 
     def to_string(self) -> str:
         if self.database is not None and self.schema_ is not None:
-            return (
-                f"{self.quote(self.database)}.{self.quote(self.schema_)}.{self.quote(self.table)}"
-            )
+            return f"{self.quote(self.database)}.{self.quote(self.schema_)}.{self.quote(self.table)}"
         elif self.schema_ is not None:
             return f"{self.quote(self.schema_)}.{self.quote(self.table)}"
         else:

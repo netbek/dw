@@ -32,7 +32,9 @@ async def create_flow_run_notification_policy(
     console: Console = None,
 ):
     existing = await get_flow_run_notification_policies(client=client)
-    existing = [policy for policy in existing if policy.block_document_id == block_document_id]
+    existing = [
+        policy for policy in existing if policy.block_document_id == block_document_id
+    ]
 
     if existing:
         if overwrite:

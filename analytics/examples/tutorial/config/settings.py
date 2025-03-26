@@ -1,11 +1,17 @@
 from functools import lru_cache
 from package.project import Project
-from package.types import CHSettings, DbtSettings, NotebookSettings, PGSettings, PrefectSettings
+from package.types import (
+    ClickHouseSettings,
+    DbtSettings,
+    NotebookSettings,
+    PostgresSettings,
+    PrefectSettings,
+)
 from package.utils.settings import (
-    create_ch_settings,
+    create_clickhouse_settings,
     create_dbt_settings,
     create_notebook_settings,
-    create_pg_settings,
+    create_postgres_settings,
     create_prefect_settings,
 )
 from pydantic import BaseModel, Field
@@ -17,12 +23,16 @@ project = Project.from_path(__file__)
 
 
 class Settings(BaseModel):
-    source_db: PGSettings = Field(default_factory=create_pg_settings("source_postgres_"))
-    destination_db: CHSettings = Field(
-        default_factory=create_ch_settings(f"{project.name}_destination_")
+    source_db: PostgresSettings = Field(
+        default_factory=create_postgres_settings("source_postgres_")
+    )
+    destination_db: ClickHouseSettings = Field(
+        default_factory=create_clickhouse_settings(f"{project.name}_destination_")
     )
     dbt: DbtSettings = Field(
-        default_factory=create_dbt_settings(project.dbt_directory, project.dbt_config_path)
+        default_factory=create_dbt_settings(
+            project.dbt_directory, project.dbt_config_path
+        )
     )
     notebook: NotebookSettings = Field(
         default_factory=create_notebook_settings(project.notebooks_directory)

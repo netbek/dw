@@ -1,7 +1,7 @@
 from package.config.settings import get_settings
-from package.database import CHAdapter
+from package.database import ClickHouseAdapter
 from package.tests.fixtures.database import DBTest
-from package.types import CHTableIdentifier, DbtSource
+from package.types import ClickHouseTableIdentifier, DbtSource
 from package.utils.sqlmodel_utils import create_model_code
 from sqlmodel import Table
 from typing import Any, Generator
@@ -11,7 +11,9 @@ import pytest
 settings = get_settings()
 
 table = "test_table"
-table_identifier = CHTableIdentifier(database=settings.test_clickhouse.database, table=table)
+table_identifier = ClickHouseTableIdentifier(
+    database=settings.test_clickhouse.database, table=table
+)
 python_class = "TestTable"
 
 create_table_statement = f"""
@@ -184,15 +186,17 @@ class {python_class}Factory(PeerDBFactoryMixin, SQLModelFactory[{python_class}])
 
 class TestCreateModelCode(DBTest):
     @pytest.fixture(scope="function")
-    def ch_table(self, ch_adapter: CHAdapter) -> Generator[CHTableIdentifier, Any, None]:
-        ch_adapter.create_table(table, create_table_statement)
+    def ch_table(
+        self, clickhouse_adapter: ClickHouseAdapter
+    ) -> Generator[ClickHouseTableIdentifier, Any, None]:
+        clickhouse_adapter.create_table(table, create_table_statement)
 
-        yield ch_adapter.get_table(table)
+        yield clickhouse_adapter.get_table(table)
 
-        ch_adapter.drop_table(table)
+        clickhouse_adapter.drop_table(table)
 
-    def test_ok(self, ch_adapter: CHAdapter, ch_table: Table):
-        result = create_model_code(ch_adapter.settings, ch_table.schema, dbt_source)
+    def test_ok(self, clickhouse_adapter: ClickHouseAdapter, ch_table: Table):
+        result = create_model_code(clickhouse_adapter.settings, ch_table.schema, dbt_source)
 
         assert result["model_code"].strip() == expected_model_code.strip()
         assert result["factory_code"].strip() == expected_factory_code.strip()
