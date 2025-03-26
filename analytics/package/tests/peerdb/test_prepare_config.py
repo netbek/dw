@@ -1,7 +1,7 @@
 from package.config.settings import get_settings
 from package.database import PostgresAdapter
 from package.peerdb import PeerDB
-from package.tests.fixtures.database import DBTest
+from package.tests.fixtures.database import DatabaseTest
 from package.types import DbtSource
 from sqlmodel import Table
 from typing import Any, Generator, List
@@ -164,9 +164,11 @@ list_resources__return_value = [
 list_resources__return_value = [DbtSource(**source) for source in list_resources__return_value]
 
 
-class TestEmptyPeerDBConfig(DBTest):
+class TestEmptyPeerDBConfig(DatabaseTest):
     @pytest.fixture(scope="function")
-    def pg_tables(self, postgres_adapter: PostgresAdapter) -> Generator[List[Table], Any, None]:
+    def postgres_tables(
+        self, postgres_adapter: PostgresAdapter
+    ) -> Generator[List[Table], Any, None]:
         for table_def in table_defs:
             postgres_adapter.create_table(*table_def)
 
@@ -178,7 +180,7 @@ class TestEmptyPeerDBConfig(DBTest):
         for table_name in table_names:
             postgres_adapter.drop_table(table_name)
 
-    def test_func(self, pg_tables: List[Table]):
+    def test_func(self, postgres_tables: List[Table]):
         peerdb_config = {}
         actual = PeerDB.prepare_config(peerdb_config, dbt_project_dir="/", generate_exclude=True)
         expected = {
@@ -192,9 +194,11 @@ class TestEmptyPeerDBConfig(DBTest):
         assert actual == expected
 
 
-class TestSourcePeerMissingTable(DBTest):
+class TestSourcePeerMissingTable(DatabaseTest):
     @pytest.fixture(scope="function")
-    def pg_tables(self, postgres_adapter: PostgresAdapter) -> Generator[List[Table], Any, None]:
+    def postgres_tables(
+        self, postgres_adapter: PostgresAdapter
+    ) -> Generator[List[Table], Any, None]:
         for table_def in table_defs[:1]:
             postgres_adapter.create_table(*table_def)
 
@@ -213,7 +217,7 @@ class TestSourcePeerMissingTable(DBTest):
             lambda *args, **kwargs: list_resources__return_value,
         )
 
-    def test_func(self, pg_tables: List[Table], list_resources: None):
+    def test_func(self, postgres_tables: List[Table], list_resources: None):
         peerdb_config = yaml.safe_load(peerdb_yaml)
 
         with pytest.raises(Exception) as exc:
@@ -224,9 +228,11 @@ class TestSourcePeerMissingTable(DBTest):
         )
 
 
-class TestDbtMissingTable(DBTest):
+class TestDbtMissingTable(DatabaseTest):
     @pytest.fixture(scope="function")
-    def pg_tables(self, postgres_adapter: PostgresAdapter) -> Generator[List[Table], Any, None]:
+    def postgres_tables(
+        self, postgres_adapter: PostgresAdapter
+    ) -> Generator[List[Table], Any, None]:
         for table_def in table_defs:
             postgres_adapter.create_table(*table_def)
 
@@ -245,7 +251,7 @@ class TestDbtMissingTable(DBTest):
             lambda *args, **kwargs: list_resources__return_value[:1],
         )
 
-    def test_func(self, pg_tables: List[Table], list_resources: None):
+    def test_func(self, postgres_tables: List[Table], list_resources: None):
         peerdb_config = yaml.safe_load(peerdb_yaml)
 
         with pytest.raises(Exception) as exc:
@@ -254,9 +260,11 @@ class TestDbtMissingTable(DBTest):
         assert str(exc.value) == "Destination table 'table_2' not found in dbt config"
 
 
-class TestOK(DBTest):
+class TestOK(DatabaseTest):
     @pytest.fixture(scope="function")
-    def pg_tables(self, postgres_adapter: PostgresAdapter) -> Generator[List[Table], Any, None]:
+    def postgres_tables(
+        self, postgres_adapter: PostgresAdapter
+    ) -> Generator[List[Table], Any, None]:
         for table_def in table_defs:
             postgres_adapter.create_table(*table_def)
 
@@ -275,7 +283,7 @@ class TestOK(DBTest):
             lambda *args, **kwargs: list_resources__return_value,
         )
 
-    def test_func(self, pg_tables: List[Table], list_resources: None):
+    def test_func(self, postgres_tables: List[Table], list_resources: None):
         peerdb_config = yaml.safe_load(peerdb_yaml)
         actual = PeerDB.prepare_config(peerdb_config, dbt_project_dir="/", generate_exclude=True)
         expected = {

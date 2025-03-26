@@ -1,6 +1,6 @@
 from package.config.settings import get_settings
 from package.database import ClickHouseAdapter
-from package.tests.fixtures.database import DBTest
+from package.tests.fixtures.database import DatabaseTest
 from package.types import ClickHouseTableIdentifier, DbtSource
 from package.utils.sqlmodel_utils import create_model_code
 from sqlmodel import Table
@@ -184,9 +184,9 @@ class {python_class}Factory(PeerDBFactoryMixin, SQLModelFactory[{python_class}])
 """
 
 
-class TestCreateModelCode(DBTest):
+class TestCreateModelCode(DatabaseTest):
     @pytest.fixture(scope="function")
-    def ch_table(
+    def clickhouse_table(
         self, clickhouse_adapter: ClickHouseAdapter
     ) -> Generator[ClickHouseTableIdentifier, Any, None]:
         clickhouse_adapter.create_table(table, create_table_statement)
@@ -195,8 +195,8 @@ class TestCreateModelCode(DBTest):
 
         clickhouse_adapter.drop_table(table)
 
-    def test_ok(self, clickhouse_adapter: ClickHouseAdapter, ch_table: Table):
-        result = create_model_code(clickhouse_adapter.settings, ch_table.schema, dbt_source)
+    def test_ok(self, clickhouse_adapter: ClickHouseAdapter, clickhouse_table: Table):
+        result = create_model_code(clickhouse_adapter.settings, clickhouse_table.schema, dbt_source)
 
         assert result["model_code"].strip() == expected_model_code.strip()
         assert result["factory_code"].strip() == expected_factory_code.strip()

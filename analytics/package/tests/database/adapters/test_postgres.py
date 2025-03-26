@@ -1,5 +1,5 @@
 from package.database import PostgresAdapter
-from package.tests.fixtures.database import DBTest
+from package.tests.fixtures.database import DatabaseTest
 from package.types import PostgresTableIdentifier
 from sqlmodel import Table, text
 from typing import Any, Generator
@@ -7,9 +7,9 @@ from typing import Any, Generator
 import pytest
 
 
-class TestPostgresAdapter(DBTest):
+class TestPostgresAdapter(DatabaseTest):
     @pytest.fixture(scope="function")
-    def pg_user(self, postgres_adapter: PostgresAdapter) -> Generator[str, Any, None]:
+    def postgres_user(self, postgres_adapter: PostgresAdapter) -> Generator[str, Any, None]:
         username = "test_user"
         password = "secret"
 
@@ -20,7 +20,7 @@ class TestPostgresAdapter(DBTest):
         postgres_adapter.drop_user(username)
 
     @pytest.fixture(scope="function")
-    def pg_table(self, postgres_adapter: PostgresAdapter) -> Generator[Table, Any, None]:
+    def postgres_table(self, postgres_adapter: PostgresAdapter) -> Generator[Table, Any, None]:
         table = "test_table"
         quoted_table = PostgresTableIdentifier(table=table).to_string()
         statement = f"""
@@ -37,12 +37,12 @@ class TestPostgresAdapter(DBTest):
         postgres_adapter.drop_table(table)
 
     @pytest.fixture(scope="function")
-    def pg_publication(
-        self, postgres_adapter: PostgresAdapter, pg_table: Table
+    def postgres_publication(
+        self, postgres_adapter: PostgresAdapter, postgres_table: Table
     ) -> Generator[str, Any, None]:
         publication = "test_publication"
 
-        postgres_adapter.create_publication(publication, tables=[pg_table.name])
+        postgres_adapter.create_publication(publication, tables=[postgres_table.name])
 
         yield publication
 
@@ -88,15 +88,15 @@ class TestPostgresAdapter(DBTest):
     def test_has_table_non_existent(self, postgres_adapter: PostgresAdapter):
         assert postgres_adapter.has_table("non_existent") is False
 
-    def test_has_table_existent(self, postgres_adapter: PostgresAdapter, pg_table: Table):
-        assert postgres_adapter.has_table(pg_table.name) is True
+    def test_has_table_existent(self, postgres_adapter: PostgresAdapter, postgres_table: Table):
+        assert postgres_adapter.has_table(postgres_table.name) is True
 
     def test_get_table_non_existent(self, postgres_adapter: PostgresAdapter):
         table = postgres_adapter.get_table("non_existent")
         assert table is None
 
-    def test_get_table_existent(self, postgres_adapter: PostgresAdapter, pg_table: Table):
-        table = postgres_adapter.get_table(pg_table.name)
+    def test_get_table_existent(self, postgres_adapter: PostgresAdapter, postgres_table: Table):
+        table = postgres_adapter.get_table(postgres_table.name)
         assert set(["id", "updated_at"]) == set([column.name for column in table.columns])
 
     def test_create_and_drop_table(self, postgres_adapter: PostgresAdapter):
@@ -121,31 +121,33 @@ class TestPostgresAdapter(DBTest):
         assert postgres_adapter.list_tables() == []
 
     def test_list_tables_populated_database(
-        self, postgres_adapter: PostgresAdapter, pg_table: Table
+        self, postgres_adapter: PostgresAdapter, postgres_table: Table
     ):
-        assert set([pg_table.name]) == set([table.name for table in postgres_adapter.list_tables()])
+        assert set([postgres_table.name]) == set(
+            [table.name for table in postgres_adapter.list_tables()]
+        )
 
     def test_get_table_replica_identity_non_existent(
-        self, postgres_adapter: PostgresAdapter, pg_table: Table
+        self, postgres_adapter: PostgresAdapter, postgres_table: Table
     ):
         assert postgres_adapter.get_table_replica_identity("non_existent_table") is None
 
     def test_get_table_replica_identity_existent(
-        self, postgres_adapter: PostgresAdapter, pg_table: Table
+        self, postgres_adapter: PostgresAdapter, postgres_table: Table
     ):
-        assert postgres_adapter.get_table_replica_identity(pg_table.name) == "default"
+        assert postgres_adapter.get_table_replica_identity(postgres_table.name) == "default"
 
     def test_set_table_replica_identity_non_existent(
-        self, postgres_adapter: PostgresAdapter, pg_table: Table
+        self, postgres_adapter: PostgresAdapter, postgres_table: Table
     ):
         postgres_adapter.set_table_replica_identity("non_existent_table", "full")
 
     def test_set_table_replica_identity_existent(
-        self, postgres_adapter: PostgresAdapter, pg_table: Table
+        self, postgres_adapter: PostgresAdapter, postgres_table: Table
     ):
-        assert postgres_adapter.get_table_replica_identity(pg_table.name) == "default"
-        postgres_adapter.set_table_replica_identity(pg_table.name, "full")
-        assert postgres_adapter.get_table_replica_identity(pg_table.name) == "full"
+        assert postgres_adapter.get_table_replica_identity(postgres_table.name) == "default"
+        postgres_adapter.set_table_replica_identity(postgres_table.name, "full")
+        assert postgres_adapter.get_table_replica_identity(postgres_table.name) == "full"
 
     def test_has_user_non_existent_user(self, postgres_adapter: PostgresAdapter):
         assert postgres_adapter.has_user("non_existent_user") is False
@@ -166,31 +168,33 @@ class TestPostgresAdapter(DBTest):
         assert postgres_adapter.has_user(username) is False
 
     def test_grant_and_revoke_user_privileges(
-        self, postgres_adapter: PostgresAdapter, pg_user: str, pg_table: Table
+        self, postgres_adapter: PostgresAdapter, postgres_user: str, postgres_table: Table
     ):
-        postgres_adapter.grant_user_privileges(pg_user, postgres_adapter.settings.schema_)
+        postgres_adapter.grant_user_privileges(postgres_user, postgres_adapter.settings.schema_)
 
-        assert postgres_adapter.list_user_privileges(pg_user) == [
+        assert postgres_adapter.list_user_privileges(postgres_user) == [
             (
                 postgres_adapter.settings.database,
                 postgres_adapter.settings.schema_,
-                pg_table.name,
+                postgres_table.name,
                 "SELECT",
             )
         ]
 
-        postgres_adapter.revoke_user_privileges(pg_user, postgres_adapter.settings.schema_)
+        postgres_adapter.revoke_user_privileges(postgres_user, postgres_adapter.settings.schema_)
 
-        assert postgres_adapter.list_user_privileges(pg_user) == []
+        assert postgres_adapter.list_user_privileges(postgres_user) == []
 
-    def test_create_and_drop_publication(self, postgres_adapter: PostgresAdapter, pg_table: Table):
+    def test_create_and_drop_publication(
+        self, postgres_adapter: PostgresAdapter, postgres_table: Table
+    ):
         publication = "test_publication"
 
-        postgres_adapter.create_publication(publication, [pg_table.name])
+        postgres_adapter.create_publication(publication, [postgres_table.name])
         assert postgres_adapter.list_publications() == [publication]
 
         postgres_adapter.drop_publication(publication)
         assert postgres_adapter.list_publications() == []
 
-    def test_list_publications(self, postgres_adapter: PostgresAdapter, pg_publication: str):
-        assert postgres_adapter.list_publications() == [pg_publication]
+    def test_list_publications(self, postgres_adapter: PostgresAdapter, postgres_publication: str):
+        assert postgres_adapter.list_publications() == [postgres_publication]

@@ -8,13 +8,15 @@ import pytest
 settings = get_settings()
 
 
-class DBTest:
+class DatabaseTest:
     @pytest.fixture(scope="session")
     def clickhouse_adapter(self) -> Generator[ClickHouseAdapter, Any, None]:
         yield ClickHouseAdapter(settings.test_clickhouse)
 
     @pytest.fixture(scope="function")
-    def ch_session(self, clickhouse_adapter: ClickHouseAdapter) -> Generator[Session, Any, None]:
+    def clickhouse_session(
+        self, clickhouse_adapter: ClickHouseAdapter
+    ) -> Generator[Session, Any, None]:
         with clickhouse_adapter.create_engine() as engine:
             session = Session(engine)
 

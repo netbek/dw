@@ -1,7 +1,7 @@
 from clickhouse_connect.driver.exceptions import DatabaseError
 from package.database import ClickHouseAdapter
 from package.tests.asserts import assert_equal_ignoring_whitespace
-from package.tests.fixtures.database import DBTest
+from package.tests.fixtures.database import DatabaseTest
 from package.types import ClickHouseTableIdentifier
 from sqlmodel import Session, Table, text
 from typing import Any, Generator
@@ -9,9 +9,9 @@ from typing import Any, Generator
 import pytest
 
 
-class TestClickHouseAdapter(DBTest):
+class TestClickHouseAdapter(DatabaseTest):
     @pytest.fixture(scope="function")
-    def ch_table(
+    def clickhouse_table(
         self, clickhouse_adapter: ClickHouseAdapter
     ) -> Generator[ClickHouseTableIdentifier, Any, None]:
         table = "test_table"
@@ -40,8 +40,10 @@ class TestClickHouseAdapter(DBTest):
             ).result_rows
         assert actual == [(1,)]
 
-    def test_create_session(self, clickhouse_adapter: ClickHouseAdapter, ch_session: Session):
-        actual = ch_session.exec(
+    def test_create_session(
+        self, clickhouse_adapter: ClickHouseAdapter, clickhouse_session: Session
+    ):
+        actual = clickhouse_session.exec(
             text("select 1 from system.databases where name = :database;").bindparams(
                 database=clickhouse_adapter.settings.database
             )
@@ -68,15 +70,19 @@ class TestClickHouseAdapter(DBTest):
     def test_has_table_non_existent(self, clickhouse_adapter: ClickHouseAdapter):
         assert clickhouse_adapter.has_table("non_existent") is False
 
-    def test_has_table_existent(self, clickhouse_adapter: ClickHouseAdapter, ch_table: Table):
-        assert clickhouse_adapter.has_table(ch_table.name) is True
+    def test_has_table_existent(
+        self, clickhouse_adapter: ClickHouseAdapter, clickhouse_table: Table
+    ):
+        assert clickhouse_adapter.has_table(clickhouse_table.name) is True
 
     def test_get_table_non_existent(self, clickhouse_adapter: ClickHouseAdapter):
         table = clickhouse_adapter.get_table("non_existent")
         assert table is None
 
-    def test_get_table_existent(self, clickhouse_adapter: ClickHouseAdapter, ch_table: Table):
-        table = clickhouse_adapter.get_table(ch_table.name)
+    def test_get_table_existent(
+        self, clickhouse_adapter: ClickHouseAdapter, clickhouse_table: Table
+    ):
+        table = clickhouse_adapter.get_table(clickhouse_table.name)
         assert set(["id", "updated_at"]) == set([column.name for column in table.columns])
 
     def test_create_and_drop_table(self, clickhouse_adapter: ClickHouseAdapter):
@@ -101,13 +107,13 @@ class TestClickHouseAdapter(DBTest):
         assert clickhouse_adapter.has_table(table) is False
 
     def test_get_create_table_statement(
-        self, clickhouse_adapter: ClickHouseAdapter, ch_table: Table
+        self, clickhouse_adapter: ClickHouseAdapter, clickhouse_table: Table
     ):
         with pytest.raises(DatabaseError):
             clickhouse_adapter.get_create_table_statement("non_existent")
 
         expected = f"""
-        CREATE TABLE {clickhouse_adapter.settings.database}.{ch_table.name}
+        CREATE TABLE {clickhouse_adapter.settings.database}.{clickhouse_table.name}
         (
             `id` UInt64,
             `updated_at` DateTime DEFAULT now()
@@ -117,16 +123,16 @@ class TestClickHouseAdapter(DBTest):
         SETTINGS index_granularity = 8192
         """
         assert_equal_ignoring_whitespace(
-            clickhouse_adapter.get_create_table_statement(ch_table.name), expected
+            clickhouse_adapter.get_create_table_statement(clickhouse_table.name), expected
         )
 
     def test_list_tables_empty_database(self, clickhouse_adapter: ClickHouseAdapter):
         assert clickhouse_adapter.list_tables() == []
 
     def test_list_tables_populated_database(
-        self, clickhouse_adapter: ClickHouseAdapter, ch_table: Table
+        self, clickhouse_adapter: ClickHouseAdapter, clickhouse_table: Table
     ):
-        assert set([ch_table.name]) == set(
+        assert set([clickhouse_table.name]) == set(
             [table.name for table in clickhouse_adapter.list_tables()]
         )
 
