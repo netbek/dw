@@ -61,7 +61,7 @@ install_tilt() {
 install_peerdb() {
     echo "${tput_yellow}Installing PeerDB ...${tput_reset}"
     uninstall_peerdb
-    git clone https://github.com/PeerDB-io/peerdb --branch v0.26.4
+    git clone https://github.com/PeerDB-io/peerdb --branch v0.26.6
     echo "${tput_green}Installed PeerDB${tput_reset}"
 }
 
