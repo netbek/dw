@@ -3,7 +3,7 @@ name: dw-clickhouse
 services:
   clickhouse:
     container_name: clickhouse
-    image: clickhouse/clickhouse-server:25.3.1.2703-alpine
+    image: clickhouse/clickhouse-server:25.3.2.39-alpine
     env_file:
       - ./clickhouse.env
     extra_hosts:
