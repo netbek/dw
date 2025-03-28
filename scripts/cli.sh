@@ -6,4 +6,4 @@ root_dir="${scripts_dir}/.."
 
 cd "${root_dir}/deploy/analytics"
 
-docker compose exec cli python /home/analyst/package/cli $@
+docker compose exec cli python -c "from dw_lib.cli.root import app; app()" $@

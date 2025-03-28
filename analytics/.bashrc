@@ -118,5 +118,5 @@ alias ll="ls -alF"
 alias la="ls -A"
 alias l="ls -CF"
 
-alias cli="python ${HOME}/package/cli"
+alias cli="python -c 'from dw_lib.cli.root import app; app()'"
 alias pc="pre-commit run --config ${HOME}/.pre-commit-config.yaml --all-files"

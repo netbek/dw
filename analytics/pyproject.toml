@@ -4,27 +4,8 @@ version = "0.0.1"
 description = "Analytics"
 requires-python = ">=3.12"
 dependencies = [
-    "clickhouse-connect>=0.8.15",
-    "clickhouse-sqlalchemy",
-    "dbt-artifacts-parser==0.8.1",
-    "dbt-clickhouse",
-    "dbt-core==1.8.9", # Pinned because of dbt-clickhouse and prefect-dbt
-    "httpx>=0.28.1",
+    "dw-lib",
     "pandas>=2.2.3",
-    "prefect==3.0.10",
-    "prefect-dbt==0.6.4",
-    "prefect-jupyter==0.3.1",
-    "prefect-shell==0.3.1",
-    "psycopg2-binary>=2.9.10",
-    "pydantic>=2.10.6",
-    "pydantic-settings>=2.7.1",
-    "pydash>=8.0.5",
-    "python-dateutil>=2.9.0.post0",
-    "pyyaml>=6.0.2",
-    "rich>=13.9.4",
-    "sqlglot==25.34.0", # Pinned because of breaking changes in 26.x. ClickHouse ORDER BY keys are not parsed consistently.
-    "sqlparse>=0.5.3",
-    "typer==0.12.5", # Pinned because of prefect
 ]
 
 [tool.isort]
@@ -64,6 +45,7 @@ testpaths = ["tests"]
 [tool.uv.sources]
 clickhouse-sqlalchemy = { git = "https://github.com/netbek/clickhouse-sqlalchemy.git", rev = "datetime-uuid" }
 dbt-clickhouse = { git = "https://github.com/netbek/dbt-clickhouse.git", rev = "v1.8.9-batch" }
+dw-lib = { git = "https://github.com/netbek/dw-lib.git", rev = "dbt-project-cli" }
 
 [tool.uv.workspace]
 members = ["analytics"]
@@ -74,15 +56,11 @@ api = [
 ]
 dev = [
     "isort>=5.13.2",
-    "livereload>=2.7.1",
-    "polyfactory>=2.19.0",
     "pre-commit>=4.1.0",
     "pytest>=8.3.4",
     "ruff>=0.9.7",
-    "sqlalchemy>=2.0.38",
     "sqlfluff>=3.3.1",
     "sqlfluff-templater-dbt>=3.3.1",
-    "sqlmodel>=0.0.22",
     "time-machine>=2.16.0",
     "yamllint>=1.35.1",
 ]
