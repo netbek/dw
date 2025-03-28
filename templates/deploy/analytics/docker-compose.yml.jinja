@@ -63,7 +63,6 @@ services:
     volumes:
       - ../../analytics/.dbt:/home/analyst/.dbt:rw
       - ../../analytics/.prefect:/home/analyst/.prefect:rw
-      - ../../analytics/package:/home/analyst/package:rw
       - ../../analytics/projects:/home/analyst/projects:rw
       - ./prefect-worker/healthcheck.py:/usr/local/share/dw/healthcheck.py:ro
       - ./database.env:/usr/local/share/dw/database.env:ro
@@ -128,7 +127,6 @@ services:
     volumes:
       - ../../analytics/.dbt:/home/analyst/.dbt:rw
       - ../../analytics/.prefect:/home/analyst/.prefect:rw
-      - ../../analytics/package:/home/analyst/package:rw
       - ../../analytics/projects:/home/analyst/projects:rw
       - ./database.env:/usr/local/share/dw/database.env:ro
       - ./peerdb.env:/usr/local/share/dw/peerdb.env:ro

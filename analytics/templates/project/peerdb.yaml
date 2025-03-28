@@ -1,3 +1,5 @@
+api_url: "{{ env_var('PEERDB_API_URL') }}"
+
 settings:
   PEERDB_CLICKHOUSE_ENABLE_PRIMARY_UPDATE: "false"
   PEERDB_CLICKHOUSE_MAX_INSERT_THREADS: "0"
