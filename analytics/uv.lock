@@ -146,7 +146,7 @@ jupyter = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dw-lib", git = "https://github.com/netbek/dw-lib.git?rev=dbt-project-cli" },
+    { name = "dw-lib", git = "https://github.com/netbek/dw-lib.git?rev=main" },
     { name = "pandas", specifier = ">=2.2.3" },
 ]
 
@@ -965,7 +965,7 @@ wheels = [
 [[package]]
 name = "dw-lib"
 version = "0.0.1"
-source = { git = "https://github.com/netbek/dw-lib.git?rev=dbt-project-cli#6a574941801162daed0c653fd6790e2b0a18d74e" }
+source = { git = "https://github.com/netbek/dw-lib.git?rev=main#bfebe74b4b45288a7b00d93e54b5caffd7ce65cc" }
 dependencies = [
     { name = "clickhouse-connect" },
     { name = "clickhouse-sqlalchemy" },
