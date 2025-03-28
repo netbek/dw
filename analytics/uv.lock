@@ -965,7 +965,7 @@ wheels = [
 [[package]]
 name = "dw-lib"
 version = "0.0.1"
-source = { git = "https://github.com/netbek/dw-lib.git?rev=dbt-project-cli#130cbfccc799636258b5f3f1283c258fba077d98" }
+source = { git = "https://github.com/netbek/dw-lib.git?rev=dbt-project-cli#6a574941801162daed0c653fd6790e2b0a18d74e" }
 dependencies = [
     { name = "clickhouse-connect" },
     { name = "clickhouse-sqlalchemy" },
