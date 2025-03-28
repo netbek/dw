@@ -30,9 +30,7 @@ class Settings(BaseModel):
         default_factory=create_clickhouse_settings(f"{project.name}_destination_")
     )
     dbt: DbtSettings = Field(
-        default_factory=create_dbt_settings(
-            project.dbt_directory, project.dbt_config_path
-        )
+        default_factory=create_dbt_settings(project.dbt_directory, project.dbt_config_path)
     )
     notebook: NotebookSettings = Field(
         default_factory=create_notebook_settings(project.notebooks_directory)

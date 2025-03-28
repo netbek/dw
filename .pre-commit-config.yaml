@@ -9,16 +9,16 @@ repos:
     rev: 6.0.1
     hooks:
       - id: isort
-        args: [--settings-path, /home/analyst/pyproject.toml]
+        args: [--settings-path, pyproject.toml]
         stages: [pre-commit]
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.11.2
     hooks:
       - id: ruff
         alias: ruff-lint
-        args: [--config, /home/analyst/pyproject.toml]
+        args: [--config, pyproject.toml]
         stages: [manual]
       - id: ruff-format
         alias: ruff
-        args: [--config, /home/analyst/pyproject.toml]
+        args: [--config, pyproject.toml]
         stages: [pre-commit]

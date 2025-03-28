@@ -1,8 +1,7 @@
 #!/opt/venv/bin/python
 import os
-import sys
-
 import requests
+import sys
 
 PREFECT_API_URL = os.environ["PREFECT_API_URL"]
 

@@ -16,9 +16,7 @@ class Settings(BaseModel):
         default_factory=create_clickhouse_settings(f"{project.name}_destination_")
     )
     dbt: dict = Field(default_factory=lambda: safe_load_file(project.dbt_config_path))
-    prefect: dict = Field(
-        default_factory=lambda: safe_load_file(project.prefect_config_path)
-    )
+    prefect: dict = Field(default_factory=lambda: safe_load_file(project.prefect_config_path))
 
 
 @lru_cache(maxsize=1, typed=True)

@@ -1,7 +1,7 @@
+from jinja2.ext import Extension
+
 import secrets
 import string
-
-from jinja2.ext import Extension
 
 
 def generate_password(length=32):
@@ -18,9 +18,7 @@ def generate_password(length=32):
         secrets.choice(string.digits),  # At least one digit
         secrets.choice(special_chars),  # At least one special character
     ]
-    other_chars += [
-        secrets.choice(alphabet) for _ in range(length - len(other_chars) - 1)
-    ]
+    other_chars += [secrets.choice(alphabet) for _ in range(length - len(other_chars) - 1)]
     secrets.SystemRandom().shuffle(other_chars)
     password = first_char + "".join(other_chars)
 
