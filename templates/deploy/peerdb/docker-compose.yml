@@ -3,54 +3,54 @@ name: peerdb
 services:
   catalog:
     extends:
-      file: ../../peerdb/docker-compose.yml
+      file: ../../vendor/peerdb/docker-compose.yml
       service: catalog
 
   temporal:
     extends:
-      file: ../../peerdb/docker-compose.yml
+      file: ../../vendor/peerdb/docker-compose.yml
       service: temporal
 
   temporal-admin-tools:
     extends:
-      file: ../../peerdb/docker-compose.yml
+      file: ../../vendor/peerdb/docker-compose.yml
       service: temporal-admin-tools
 
   temporal-ui:
     extends:
-      file: ../../peerdb/docker-compose.yml
+      file: ../../vendor/peerdb/docker-compose.yml
       service: temporal-ui
 
   flow-api:
     extends:
-      file: ../../peerdb/docker-compose.yml
+      file: ../../vendor/peerdb/docker-compose.yml
       service: flow-api
 
   flow-snapshot-worker:
     extends:
-      file: ../../peerdb/docker-compose.yml
+      file: ../../vendor/peerdb/docker-compose.yml
       service: flow-snapshot-worker
     extra_hosts:
       - host.docker.internal:host-gateway
 
   flow-worker:
     extends:
-      file: ../../peerdb/docker-compose.yml
+      file: ../../vendor/peerdb/docker-compose.yml
       service: flow-worker
 
   peerdb:
     extends:
-      file: ../../peerdb/docker-compose.yml
+      file: ../../vendor/peerdb/docker-compose.yml
       service: peerdb
 
   peerdb-ui:
     extends:
-      file: ../../peerdb/docker-compose.yml
+      file: ../../vendor/peerdb/docker-compose.yml
       service: peerdb-ui
 
   minio:
     extends:
-      file: ../../peerdb/docker-compose.yml
+      file: ../../vendor/peerdb/docker-compose.yml
       service: minio
 
 volumes:

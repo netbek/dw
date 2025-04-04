@@ -1,0 +1,6 @@
+[submodule "vendor/wait-for-it"]
+	path = vendor/wait-for-it
+	url = https://github.com/vishnubob/wait-for-it
+[submodule "vendor/peerdb"]
+	path = vendor/peerdb
+	url = https://github.com/PeerDB-io/peerdb

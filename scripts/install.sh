@@ -11,7 +11,7 @@ _help() {
     echo "Usage: $0 <PACKAGE> [PACKAGE ...]"
     echo ""
     echo "Arguments:"
-    echo "    package: docker, mkcert, peerdb, tilt, uv"
+    echo "    package: docker, mkcert, tilt, uv"
 }
 
 docker_compose_exists() {
@@ -58,26 +58,6 @@ _tilt_install() {
     echo "${tput_green}Installed Tilt${tput_reset}"
 }
 
-_peerdb_install() {
-    echo "${tput_yellow}Installing PeerDB ...${tput_reset}"
-    _peerdb_uninstall
-    git clone https://github.com/PeerDB-io/peerdb --branch v0.26.8
-    echo "${tput_green}Installed PeerDB${tput_reset}"
-}
-
-_peerdb_uninstall() {
-    if [ -d peerdb ]; then
-        rm -fr peerdb
-
-        # Delete volumes
-        for volume in peerdb_minio-data peerdb_pgdata; do
-            if docker volume inspect "$volume" &>/dev/null; then
-                docker volume rm "$volume"
-            fi
-        done
-    fi
-}
-
 _uv_install() {
     echo "${tput_yellow}Installing uv ...${tput_reset}"
 
@@ -104,6 +84,6 @@ for package in "$@"; do
     if command_exists "$cmd"; then
         $cmd
     else
-        echo "${tput_red}Error: Package must be one of: docker, mkcert, peerdb, tilt, uv${tput_reset}"
+        echo "${tput_red}Error: Package must be one of: docker, mkcert, tilt, uv${tput_reset}"
     fi
 done
