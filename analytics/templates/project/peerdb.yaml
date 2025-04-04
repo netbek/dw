@@ -14,23 +14,24 @@ users:
 
 peers:
   source:
-    type: 3
-    postgres_config:
+    type: postgres
+    settings:
       host: host.docker.internal
       port: 5432
-      user: postgres
+      username: postgres
       password: postgres
       database: app
 
   destination:
-    type: 8
-    clickhouse_config:
+    type: clickhouse
+    settings:
       host: clickhouse
-      port: 9000
-      user: peerdb
+      http_port: 8123
+      tcp_port: 9000
+      username: peerdb
       password: peerdb
       database: app
-      disable_tls: true
+      secure: false
 
 mirrors:
   +do_initial_snapshot: true
