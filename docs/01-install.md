@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-1. [Postgres v13 or higher](https://www.postgresql.org/about/news/postgresql-13-released-2077/).
+1. [Postgres v14 or higher](https://www.postgresql.org/about/news/postgresql-174-168-1512-1417-and-1320-released-3018/).
 
     Enable replication on the Postgres server.
 
@@ -154,7 +154,7 @@ Set `/path/to/` to the location of the repository on your machine.
     ./scripts/cli.sh peerdb uninstall <PROJECT_NAME>
     ```
 
-3. Delete all the data and Docker images:
+3. Delete all the data and the Docker images:
 
     ```shell
     tilt down
@@ -236,7 +236,7 @@ Set `/path/to/` to the location of the repository on your machine.
     ./scripts/cli.sh peerdb uninstall <PROJECT_NAME>
     ```
 
-3. Delete all the data and Docker images:
+3. Delete all the data and the Docker images:
 
     ```shell
     ./scripts/docker.sh down
