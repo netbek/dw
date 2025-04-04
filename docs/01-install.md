@@ -2,11 +2,11 @@
 
 ## Prerequisites
 
-1. [Postgres v14 or higher](https://www.postgresql.org/about/news/postgresql-174-168-1512-1417-and-1320-released-3018/).
+1. Install [Postgres v14 or higher](https://github.com/docker-library/docs/blob/master/postgres/README.md).
 
-    Enable replication on the Postgres server.
+2. Enable replication on the Postgres server. The recommended settings are:
 
-    | Setting                      | Recommended value  |
+    | Setting                      | Value              |
     |------------------------------|--------------------|
     | wal_level                    | logical            |
     | max_wal_senders              | > 1                |
@@ -32,22 +32,22 @@
 
 ### Install
 
-1. Install [Docker Engine v23 or higher](https://docs.docker.com/engine/install/) and [Docker Compose v2 or higher](https://docs.docker.com/compose/install/). Follow the links for instructions or run this script:
+1. Clone the repo and its submodules:
+
+    ```shell
+    git clone --recurse-submodules git@github.com:netbek/dw.git
+    ```
+
+2. Install [Docker Engine v23 or higher](https://docs.docker.com/engine/install/) and [Docker Compose v2 or higher](https://docs.docker.com/compose/install/). Follow the links for instructions or run this script:
 
     ```shell
     ./scripts/install.sh docker
     ```
 
-2. Install [Tilt v0.33.20 or higher](https://docs.tilt.dev/install). Follow the link for instructions or run this script:
+3. Install [Tilt v0.33.20 or higher](https://docs.tilt.dev/install). Follow the link for instructions or run this script:
 
     ```shell
     ./scripts/install.sh tilt
-    ```
-
-3. Install PeerDB:
-
-    ```shell
-    ./scripts/install.sh peerdb
     ```
 
 4. Install a deployment configuration:
@@ -165,16 +165,16 @@ Set `/path/to/` to the location of the repository on your machine.
 
 ### Install
 
-1. Install [Docker Engine v23 or higher](https://docs.docker.com/engine/install/) and [Docker Compose v2 or higher](https://docs.docker.com/compose/install/). Follow the links for instructions or run this script:
+1. Clone the repo and its submodules:
+
+    ```shell
+    git clone --recurse-submodules https://github.com/netbek/dw.git
+    ```
+
+2. Install [Docker Engine v23 or higher](https://docs.docker.com/engine/install/) and [Docker Compose v2 or higher](https://docs.docker.com/compose/install/). Follow the links for instructions or run this script:
 
     ```shell
     ./scripts/install.sh docker
-    ```
-
-2. Install PeerDB:
-
-    ```shell
-    ./scripts/install.sh peerdb
     ```
 
 3. Install a deployment configuration:
