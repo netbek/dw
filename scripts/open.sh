@@ -9,12 +9,12 @@ source "${scripts_dir}/functions.sh"
 
 name_choices=("dbt-docs" "jupyter" "prefect-server" "vscode" "cadvisor" "grafana" "prometheus")
 
-if ([ "$1" == "--help" ] || [ -z "$1" ]); then
+if [[ "$1" == "--help" || "$1" == "-h" ]] || [ -z "$1" ]; then
     echo "Usage: $0 NAME"
     echo ""
     echo "Options:"
     echo "    name: ${name_choices[@]}"
-    exit 1
+    exit 0
 fi
 
 name="$1"

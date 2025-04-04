@@ -7,7 +7,7 @@ root_dir="${scripts_dir}/.."
 source "${scripts_dir}/variables.sh"
 source "${scripts_dir}/functions.sh"
 
-echo_help() {
+_help() {
     echo "Usage: $0 [DESTINATION_DIR]"
     echo ""
     echo "Options:"
@@ -15,7 +15,7 @@ echo_help() {
 }
 
 if [ "$1" == "--help" ]; then
-    echo_help
+    _help
     exit 1
 fi
 

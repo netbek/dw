@@ -14,7 +14,7 @@ dirs=(
     "peerdb"
 )
 
-echo_help() {
+_help() {
     echo "Usage: $0 <COMMAND>"
     echo ""
     echo "Arguments:"
@@ -28,7 +28,7 @@ echo_help() {
     echo "    profile: dev, prod"
 }
 
-up() {
+_up() {
     local profile="$1"
 
     cd "${root_dir}/deploy/clickhouse"
@@ -46,7 +46,7 @@ up() {
     fi
 }
 
-down() {
+_down() {
     cd "${root_dir}/deploy/analytics"
     docker compose down
 
@@ -57,32 +57,32 @@ down() {
     docker compose down
 }
 
-build() {
+_build() {
     for dir in "${dirs[@]}"; do
         cd "${root_dir}/deploy/${dir}"
 
         services=$(yq_cmd '.services | to_entries | map(select(.value.build != null) | .key) | .[]' docker-compose.yml)
         for service in $services; do
             cmd="docker compose build ${service} --build-arg DOCKER_UID=$(id -u) --build-arg DOCKER_GID=$(id -g)"
-            $cmd
+            "$cmd"
         done
 
         services=$(yq_cmd '.services | to_entries | map(select(.value.build == null) | .key) | .[]' docker-compose.yml)
         for service in $services; do
             cmd="docker compose pull ${service}"
-            $cmd
+            "$cmd"
         done
     done
 
     echo "${tput_green}Done!${tput_reset}"
 }
 
-destroy() {
+_destroy() {
     for dir in "${dirs[@]}"; do
         cd "${root_dir}/deploy/${dir}"
 
         # Delete images, volumes and networks
-        docker compose down -v --rmi local
+        docker compose down -v --remove-orphans --rmi local
 
         # Delete images tagged by Tilt
         services=$(yq_cmd '.services | to_entries | map(select(.value.build != null) | .key) | .[]' docker-compose.yml)
@@ -103,22 +103,22 @@ destroy() {
     echo "${tput_green}Done!${tput_reset}"
 }
 
-if ([ "$1" == "--help" ] || [ -z "$1" ]); then
-    echo_help
-    exit 1
+if [[ "$1" == "--help" || "$1" == "-h" ]] || [ -z "$1" ]; then
+    _help
+    exit 0
 fi
 
-cmd="$1"
+cmd="_${1}"
 profile="$2"
 
-if [ "${cmd}" == "up" ]; then
-    if ([ "${profile}" == "dev" ] || [ "${profile}" == "prod" ]); then
-        $cmd "${profile}"
+if [ "$cmd" == "_up" ]; then
+    if ([ "$profile" == "dev" ] || [ "$profile" == "prod" ]); then
+        "$cmd" "$profile"
     else
         echo "${tput_red}Error: Profile must be one of: dev, prod${tput_reset}"
     fi
 elif command_exists "$cmd"; then
-    $cmd
+    "$cmd"
 else
     echo "${tput_red}Error: Command must be one of: down, build, destroy${tput_reset}"
 fi
