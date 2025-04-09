@@ -64,7 +64,7 @@ _uv_install() {
     if command_exists "uv"; then
         uv self update
     else
-        curl -fsSL https://astral.sh/uv/0.6.12/install.sh | sh
+        curl -fsSL https://astral.sh/uv/0.6.13/install.sh | sh
     fi
 
     echo "${tput_green}Installed uv${tput_reset}"
