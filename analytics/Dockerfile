@@ -1,4 +1,4 @@
-FROM python:3.12.9-slim-bookworm AS python-builder
+FROM python:3.12.10-slim-bookworm AS python-builder
 COPY --from=ghcr.io/astral-sh/uv:0.6.12 /uv /uvx /bin/
 
 RUN apt-get update --yes && \
@@ -58,7 +58,7 @@ WORKDIR /home/${DOCKER_USER}
 
 ####################################################################################################
 
-FROM python:3.12.9-slim-bookworm AS jupyter
+FROM python:3.12.10-slim-bookworm AS jupyter
 COPY --from=ghcr.io/astral-sh/uv:0.6.12 /uv /uvx /bin/
 
 ARG DOCKER_UID
@@ -84,7 +84,7 @@ CMD ["jupyter", "nbclassic", "--ip='0.0.0.0'", "--port=8888", "--no-browser"]
 
 ####################################################################################################
 
-FROM python:3.12.9-slim-bookworm AS api
+FROM python:3.12.10-slim-bookworm AS api
 COPY --from=ghcr.io/astral-sh/uv:0.6.12 /uv /uvx /bin/
 
 ARG DOCKER_UID
