@@ -146,7 +146,7 @@ jupyter = [
 
 [package.metadata]
 requires-dist = [
-    { name = "dw-lib", git = "https://github.com/netbek/dw-lib.git?rev=main" },
+    { name = "dw-lib", git = "https://github.com/netbek/dw-lib.git?rev=0.0.7" },
     { name = "pandas", specifier = ">=2.2.3" },
 ]
 
@@ -964,8 +964,8 @@ wheels = [
 
 [[package]]
 name = "dw-lib"
-version = "0.0.1"
-source = { git = "https://github.com/netbek/dw-lib.git?rev=main#3babd8b49be6abf761188709b09a481104b247a3" }
+version = "0.0.7"
+source = { git = "https://github.com/netbek/dw-lib.git?rev=0.0.7#89076ff75423da495a8aad2d729b152dbc93df84" }
 dependencies = [
     { name = "clickhouse-connect" },
     { name = "clickhouse-sqlalchemy" },
@@ -3430,11 +3430,11 @@ wheels = [
 
 [[package]]
 name = "sqlglot"
-version = "25.34.1"
+version = "26.14.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/76/f3/a7d1a7bcd4477e062e540829030f28cebdbbf83000715cb673d2174f5b09/sqlglot-25.34.1.tar.gz", hash = "sha256:6952c083c4a8b8de3c09c10b262a03c6853071bd397f05759c08f1e2f3c683cb", size = 19772522 }
+sdist = { url = "https://files.pythonhosted.org/packages/87/e2/d6080d2992882657b4a2ddf857ca48bcde2813a879c73068ade7779efd43/sqlglot-26.14.0.tar.gz", hash = "sha256:7c75e28cb5c245ed3b3d995c2affcc6d5975e2ca8ec052fe132b8e5287e72c61", size = 5348485 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/1a/6f/7673d955e127b1b306e22112e9fadd75ed409a60f9b3cfd7325d58d07bc5/sqlglot-25.34.1-py3-none-any.whl", hash = "sha256:15099f8af832e6f5593fb92211d8b3f0810744ac0dc443fb70010fa38dc2562b", size = 435088 },
+    { url = "https://files.pythonhosted.org/packages/d1/4b/cae2d5507a7bc0fa7615b88b555b5cfce3c35c283bb52e1d7404e7fbfc65/sqlglot-26.14.0-py3-none-any.whl", hash = "sha256:795b5f6be71b1e1f05f0d977bb8e5723799da6c5333cb836c488db4661b1f21e", size = 457537 },
 ]
 
 [[package]]

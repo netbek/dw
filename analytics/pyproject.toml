@@ -45,7 +45,7 @@ testpaths = ["tests"]
 [tool.uv.sources]
 clickhouse-sqlalchemy = { git = "https://github.com/netbek/clickhouse-sqlalchemy.git", rev = "datetime-uuid" }
 dbt-clickhouse = { git = "https://github.com/netbek/dbt-clickhouse.git", rev = "v1.8.9-batch" }
-dw-lib = { git = "https://github.com/netbek/dw-lib.git", rev = "main" }
+dw-lib = { git = "https://github.com/netbek/dw-lib.git", rev = "0.0.7" }
 
 [tool.uv.workspace]
 members = ["analytics"]
