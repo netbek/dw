@@ -10,6 +10,7 @@
         "charliermarsh.ruff",
         "dorzey.vscode-sqlfluff",
         "eamodio.gitlens",
+        "mikestead.dotenv",
         "ms-python.isort",
         "ms-python.python",
         "ms-python.vscode-pylance",
