@@ -19,7 +19,7 @@ docker_compose_exists() {
     return $?
 }
 
-docker_install() {
+install_docker() {
     echo "${tput_yellow}Installing Docker ...${tput_reset}"
 
     if ! command_exists "docker" || ! docker_compose_exists; then
@@ -51,7 +51,7 @@ docker_install() {
     echo "${tput_green}Installed Docker${tput_reset}"
 }
 
-mkcert_install() {
+install_mkcert() {
     echo "${tput_yellow}Installing mkcert ...${tput_reset}"
     sudo apt install libnss3-tools
     curl -JLO "https://dl.filippo.io/mkcert/v1.4.4?for=linux/amd64"
@@ -60,13 +60,13 @@ mkcert_install() {
     echo "${tput_green}Installed mkcert${tput_reset}"
 }
 
-tilt_install() {
+install_tilt() {
     echo "${tput_yellow}Installing Tilt ...${tput_reset}"
     curl -fsSL https://raw.githubusercontent.com/tilt-dev/tilt/v0.33.21/scripts/install.sh | bash
     echo "${tput_green}Installed Tilt${tput_reset}"
 }
 
-uv_install() {
+install_uv() {
     echo "${tput_yellow}Installing uv ...${tput_reset}"
 
     if command_exists "uv"; then
@@ -86,7 +86,7 @@ fi
 cd "${root_dir}"
 
 for package in "$@"; do
-    cmd="${package}_install"
+    cmd="install_${package}"
     shift
 
     if command_exists "$cmd"; then
