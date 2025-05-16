@@ -7,7 +7,7 @@ root_dir="${scripts_dir}/.."
 source "${scripts_dir}/variables.sh"
 source "${scripts_dir}/functions.sh"
 
-_help() {
+help() {
     echo "Usage: $0 <REPOSITORY_URL> <BRANCH_NAME>"
     echo ""
     echo "Arguments:"
@@ -16,7 +16,7 @@ _help() {
 }
 
 if ([ "$1" == "--help" ] || [ -z "$1" ] || [ -z "$2" ]); then
-    _help
+    help
     exit 1
 fi
 

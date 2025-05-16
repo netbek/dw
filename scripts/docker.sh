@@ -14,7 +14,7 @@ dirs=(
     "peerdb"
 )
 
-_help() {
+help() {
     echo "Usage: $0 <COMMAND>"
     echo ""
     echo "Arguments:"
@@ -28,7 +28,7 @@ _help() {
     echo "    profile: dev, prod"
 }
 
-_up() {
+up() {
     local profile="$1"
 
     cd "${root_dir}/deploy/clickhouse"
@@ -46,7 +46,7 @@ _up() {
     fi
 }
 
-_down() {
+down() {
     cd "${root_dir}/deploy/analytics"
     docker compose down
 
@@ -57,7 +57,7 @@ _down() {
     docker compose down
 }
 
-_build() {
+build() {
     for dir in "${dirs[@]}"; do
         cd "${root_dir}/deploy/${dir}"
 
@@ -77,7 +77,7 @@ _build() {
     echo "${tput_green}Done!${tput_reset}"
 }
 
-_destroy() {
+destroy() {
     for dir in "${dirs[@]}"; do
         cd "${root_dir}/deploy/${dir}"
 
@@ -104,14 +104,14 @@ _destroy() {
 }
 
 if [[ "$1" == "--help" || "$1" == "-h" ]] || [ -z "$1" ]; then
-    _help
+    help
     exit 0
 fi
 
-cmd="_${1}"
+cmd="$1"
 profile="$2"
 
-if [ "$cmd" == "_up" ]; then
+if [ "$cmd" == "up" ]; then
     if ([ "$profile" == "dev" ] || [ "$profile" == "prod" ]); then
         "$cmd" "$profile"
     else
