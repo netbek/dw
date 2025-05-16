@@ -154,7 +154,7 @@ services:
   {% if profile == 'dev' -%}
   test-clickhouse:
     container_name: test-clickhouse
-    image: clickhouse/clickhouse-server:25.3.3.42-alpine
+    image: clickhouse/clickhouse-server:25.4.4.25-alpine
     env_file:
       - ./test-clickhouse.env
     ports:
