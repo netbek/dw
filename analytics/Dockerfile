@@ -1,5 +1,5 @@
 FROM python:3.12.10-slim-bookworm AS python-builder
-COPY --from=ghcr.io/astral-sh/uv:0.6.14 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.7.4 /uv /uvx /bin/
 
 RUN apt-get update --yes && \
     apt-get install --yes --no-install-recommends \
@@ -25,7 +25,7 @@ RUN apt-get purge --yes \
 ####################################################################################################
 
 FROM prefecthq/prefect:3.0.10-python3.12 AS prefect-common
-COPY --from=ghcr.io/astral-sh/uv:0.6.14 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.7.4 /uv /uvx /bin/
 
 ARG DOCKER_UID
 ARG DOCKER_GID
@@ -59,7 +59,7 @@ WORKDIR /home/${DOCKER_USER}
 ####################################################################################################
 
 FROM python:3.12.10-slim-bookworm AS jupyter
-COPY --from=ghcr.io/astral-sh/uv:0.6.14 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.7.4 /uv /uvx /bin/
 
 ARG DOCKER_UID
 ARG DOCKER_GID
@@ -85,7 +85,7 @@ CMD ["jupyter", "nbclassic", "--ip='0.0.0.0'", "--port=8888", "--no-browser"]
 ####################################################################################################
 
 FROM python:3.12.10-slim-bookworm AS api
-COPY --from=ghcr.io/astral-sh/uv:0.6.14 /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.7.4 /uv /uvx /bin/
 
 ARG DOCKER_UID
 ARG DOCKER_GID
